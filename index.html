@@ -6,7 +6,10 @@
     <title>大北門讚 智能排班App</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/833/833593.png">
+    
+    <!-- 🎯 補上你專屬的大北門讚 APP 桌面 Icon 通行證 -->
+    <link rel="apple-touch-icon" href="https://doppelgangerin6-byte.github.io/dabeimen_shift/app_icon.png">
+    <link rel="icon" type="image/png" href="https://doppelgangerin6-byte.github.io/dabeimen_shift/app_icon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -16,7 +19,6 @@
         body { font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* 加入切換日期的滑順淡入動畫 */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
     </style>
@@ -59,14 +61,13 @@
             </div>
         </div>
 
-        <!-- ================= 頁面 2：月曆總覽 (全新宮格設計) ================= -->
+        <!-- ================= 頁面 2：月曆總覽 ================= -->
         <div id="page-calendar" class="hidden flex flex-col flex-1 p-5">
             <div class="mb-4">
                 <h1 class="text-2xl font-black text-[#1A1D20]">6月 班表日曆 📅</h1>
                 <p class="text-xs text-gray-400 mt-0.5">點擊日期查看當日詳細出勤名單</p>
             </div>
             
-            <!-- 上半部：日曆宮格 -->
             <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm mb-4">
                 <div class="grid grid-cols-7 gap-1 text-center mb-3">
                     <div class="text-[11px] font-bold text-gray-400">一</div>
@@ -77,15 +78,10 @@
                     <div class="text-[11px] font-bold text-gray-400">六</div>
                     <div class="text-[11px] font-bold text-red-400">日</div>
                 </div>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-2">
-                    <!-- 動態生成宮格 -->
-                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
             </div>
 
-            <!-- 下半部：點擊後顯示的詳細資訊卡 -->
-            <div id="calendar-detail-card">
-                <!-- 動態生成名單 -->
-            </div>
+            <div id="calendar-detail-card"></div>
         </div>
 
         <!-- ================= 頁面 3：同仁統計 ================= -->
@@ -161,7 +157,7 @@
         ];
 
         let currentSelectedDay = new Date().getDate(); 
-        let calendarSelectedDay = currentSelectedDay; // 專屬於月曆頁面的狀態
+        let calendarSelectedDay = currentSelectedDay;
 
         function getWeekdayString(day) {
             const index = (day - 1) % 7;
@@ -198,7 +194,6 @@
             el.className = `text-[10px] font-bold px-2 py-0.5 rounded ${className}`;
         }
 
-        // ================= 頁面 1：單日排班 =================
         function renderDailyPage(day) {
             currentSelectedDay = day;
             document.getElementById("daily-title-date").innerText = `6月${day}日 ${getWeekdayString(day)} · 單日檢視`;
@@ -233,12 +228,10 @@
             else eveningData.forEach(p => eveningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
         }
 
-        // ================= 頁面 2：月曆總覽 (新宮格邏輯) =================
         function renderCalendarPage() {
             const grid = document.getElementById("calendar-grid");
             grid.innerHTML = "";
 
-            // 6月1日是星期一，直接從第1格開始印 1~30
             for (let i = 1; i <= 30; i++) {
                 const earlyCount = globalMonthlyShifts[i]["早班"].length;
                 const lateCount = globalMonthlyShifts[i]["晚班"].length;
@@ -259,7 +252,7 @@
 
         function selectCalendarDay(day) {
             calendarSelectedDay = day;
-            renderCalendarPage(); // 重繪宮格以更新黑色選取框
+            renderCalendarPage();
         }
 
         function updateCalendarDetail(day) {
@@ -267,7 +260,6 @@
             const early = globalMonthlyShifts[day]["早班"].map(e => e.name);
             const late = globalMonthlyShifts[day]["晚班"].map(e => e.name);
 
-            // 加入 animate-fade-in 讓切換時有呼吸感
             detailContainer.innerHTML = `
                 <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in" key="${day}">
                     <div class="flex justify-between items-center mb-3">
@@ -295,7 +287,6 @@
             `;
         }
 
-        // ================= 頁面 3：同仁統計 =================
         function renderSummaryPage() {
             const container = document.getElementById("employee-summary-list");
             container.innerHTML = "";
