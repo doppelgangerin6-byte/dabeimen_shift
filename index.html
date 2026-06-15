@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- 🎯 補上專屬的 APP 桌面 Icon 通行證 (已完美修正為 .jpg) -->
     <link rel="apple-touch-icon" href="https://doppelgangerin6-byte.github.io/dabeimen_shift/app_icon.jpg">
     <link rel="icon" type="image/jpeg" href="https://doppelgangerin6-byte.github.io/dabeimen_shift/app_icon.jpg">
     
@@ -25,9 +24,8 @@
 </head>
 <body class="bg-[#F4F6F8] flex justify-center min-h-screen">
 
-    <div class="w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-16 min-h-screen">
+    <div class="w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-24 min-h-screen">
         
-        <!-- ================= 頁面 1：單日排班 ================= -->
         <div id="page-daily" class="flex flex-col flex-1 p-5">
             <div class="flex justify-between items-center mb-4">
                 <div>
@@ -61,7 +59,6 @@
             </div>
         </div>
 
-        <!-- ================= 頁面 2：月曆總覽 ================= -->
         <div id="page-calendar" class="hidden flex flex-col flex-1 p-5">
             <div class="mb-4">
                 <h1 class="text-2xl font-black text-[#1A1D20]">6月 班表日曆 📅</h1>
@@ -84,17 +81,14 @@
             <div id="calendar-detail-card"></div>
         </div>
 
-        <!-- ================= 頁面 3：同仁統計 ================= -->
         <div id="page-summary" class="hidden flex flex-col flex-1 p-5">
             <div class="mb-4">
                 <h1 class="text-2xl font-black text-[#1A1D20]">6月 同仁出勤統計 📊</h1>
-                <p class="text-xs text-gray-400 mt-0.5">全時段精準拆解：全日休與早/午/晚局部休息</p>
-            </div>
+                </div>
             <div id="employee-summary-list" class="flex flex-col gap-3 flex-1 overflow-y-auto no-scrollbar"></div>
         </div>
 
-        <!-- ================= 底部導覽列 ================= -->
-        <div class="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex justify-around items-center shadow-lg">
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md h-16 bg-white border-t border-gray-200 flex justify-around items-center shadow-lg z-50">
             <button onclick="switchPage('daily')" id="nav-daily" class="flex flex-col items-center gap-1 text-[#1A1D20] transition-colors">
                 <i class="fa-solid fa-calendar-day text-lg"></i>
                 <span class="text-[10px] font-bold">單日排班</span>
