@@ -258,6 +258,9 @@
         }
 
         function switchMonth(month) {
+            // 🌟 新增：切換月份震動回饋
+            if (navigator.vibrate) navigator.vibrate(30);
+
             currentMonth = parseInt(month);
             currentEmployeeFilter = 'all';
             dayInitiated = false; 
@@ -275,6 +278,9 @@
         }
 
         function filterEmployee(empName) {
+            // 🌟 新增：切換濾鏡震動回饋
+            if (navigator.vibrate) navigator.vibrate(30);
+            
             currentEmployeeFilter = empName;
             renderCalendarPage();
         }
@@ -292,7 +298,13 @@
                 const isSelected = i === day;
                 const div = document.createElement("div");
                 div.className = `flex flex-col items-center justify-center min-w-[55px] h-[55px] rounded-xl border cursor-pointer transition-all ${isSelected ? 'bg-[#1A1D20] border-[#1A1D20] text-white shadow-md' : 'bg-white border-[#E2E8F0] text-[#2D3748]'}`;
-                div.onclick = () => renderDailyPage(i);
+                
+                div.onclick = () => {
+                    // 🌟 新增：單日排班日期切換震動回饋
+                    if (navigator.vibrate) navigator.vibrate(30);
+                    renderDailyPage(i);
+                };
+
                 div.innerHTML = `<span class="text-base font-bold ${isSelected ? 'text-[#F5C144]' : ''}">${i}</span><span class="text-[9px] ${isSelected ? 'text-white/70' : 'text-gray-400'} font-bold">${getWeekdayString(currentMonth, i)}</span>`;
                 slider.appendChild(div);
                 if (isSelected && !dayInitiated) {
@@ -358,7 +370,23 @@
             updateCalendarDetail(calendarSelectedDay);
         }
 
-        // 🌟 更新日曆明細卡片 (支援專屬搭檔模式)
+        // 🌟 更新版：點擊月曆時有微震動 + 自動平滑捲動
+        function selectCalendarDay(day) {
+            calendarSelectedDay = day;
+            renderCalendarPage();
+            
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+            
+            setTimeout(() => {
+                const detailCard = document.getElementById("calendar-detail-card");
+                if (detailCard) {
+                    detailCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 50);
+        }
+
         function updateCalendarDetail(day) {
             const detailContainer = document.getElementById("calendar-detail-card");
             const shiftData = getShiftData(currentMonth, day);
@@ -367,31 +395,25 @@
             let earlyHtml = '';
             let lateHtml = '';
 
-            // 全體模式
             if (currentEmployeeFilter === 'all') {
                 const early = shiftData["早班"].map(e => e.name);
                 const late = shiftData["晚班"].map(e => e.name);
                 earlyHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${early.length ? early.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
                 lateHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${late.length ? late.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
-            } 
-            // 專屬模式
-            else {
+            } else {
                 titleText = `<span class="text-[#1A1D20]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${currentEmployeeFilter} 專屬班表</span>`;
 
                 const myEarly = shiftData["早班"].find(e => e.name === currentEmployeeFilter);
                 const myLate = shiftData["晚班"].find(e => e.name === currentEmployeeFilter);
                 
-                // 抓出當天一起上班的搭檔
                 const otherEarly = shiftData["早班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
                 const otherLate = shiftData["晚班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
 
-                // 早班邏輯
                 earlyHtml = myEarly
                     ? `<p class="text-sm font-black text-[#2D3748]">${myEarly.hours}</p>`
                     : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
                 if (otherEarly.length > 0) earlyHtml += `<div class="mt-2 pt-1.5 border-t border-amber-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherEarly.join(', ')}</p></div>`;
 
-                // 晚班邏輯
                 lateHtml = myLate
                     ? `<p class="text-sm font-black text-[#2D3748]">${myLate.hours}</p>`
                     : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
@@ -467,6 +489,9 @@
         }
 
         function switchPage(page) {
+            // 🌟 新增：底部導覽列切換震動回饋
+            if (navigator.vibrate) navigator.vibrate(30);
+
             document.getElementById("page-daily").classList.add("hidden");
             document.getElementById("page-calendar").classList.add("hidden");
             document.getElementById("page-summary").classList.add("hidden");
