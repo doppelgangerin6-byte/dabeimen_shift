@@ -18,6 +18,7 @@
         body { font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        select { -webkit-tap-highlight-color: transparent; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
     </style>
@@ -26,11 +27,11 @@
 
     <div class="w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-24 min-h-screen">
         
-        <!-- ================= 全域頂部導覽列 (月份切換) ================= -->
+        <!-- ================= 全域頂部導覽列 ================= -->
         <div class="px-5 pt-6 pb-2 sticky top-0 z-40 bg-[#F4F6F8]">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚 ⚡</h1>
-                <div class="relative">
+                <div class="relative active:scale-95 transition-transform duration-100">
                     <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#1A1D20] text-[#F5C144] border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
                         <option value="6">6月 班表</option>
                         <option value="7">7月 班表</option>
@@ -79,7 +80,7 @@
                     <p class="text-lg font-bold text-[#1A1D20]" id="calendar-title-month">6月 班表日曆</p>
                     <p class="text-[10px] text-gray-400 mt-0.5">點擊日期查看當日名單</p>
                 </div>
-                <div class="relative">
+                <div class="relative active:scale-95 transition-transform duration-100">
                     <select id="employee-filter" onchange="filterEmployee(this.value)" class="appearance-none bg-white border border-[#E2E8F0] text-[#1A1D20] text-xs font-bold py-1.5 pl-2.5 pr-7 rounded-md shadow-sm focus:outline-none cursor-pointer">
                         <option value="all">所有人員</option>
                     </select>
@@ -113,15 +114,15 @@
 
         <!-- ================= 底部導覽列 ================= -->
         <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md h-16 bg-white border-t border-gray-200 flex justify-around items-center shadow-lg z-50">
-            <button onclick="switchPage('daily')" id="nav-daily" class="flex flex-col items-center gap-1 text-[#1A1D20] transition-colors">
+            <button onclick="switchPage('daily')" id="nav-daily" class="flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100">
                 <i class="fa-solid fa-calendar-day text-lg"></i>
                 <span class="text-[10px] font-bold">單日排班</span>
             </button>
-            <button onclick="switchPage('calendar')" id="nav-calendar" class="flex flex-col items-center gap-1 text-gray-400 transition-colors">
+            <button onclick="switchPage('calendar')" id="nav-calendar" class="flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100">
                 <i class="fa-solid fa-calendar-days text-lg"></i>
                 <span class="text-[10px] font-bold">月曆總覽</span>
             </button>
-            <button onclick="switchPage('summary')" id="nav-summary" class="flex flex-col items-center gap-1 text-gray-400 transition-colors">
+            <button onclick="switchPage('summary')" id="nav-summary" class="flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100">
                 <i class="fa-solid fa-chart-pie text-lg"></i>
                 <span class="text-[10px] font-bold">同仁統計</span>
             </button>
@@ -130,10 +131,7 @@
     </div>
 
     <script>
-        const startWeekdays = {
-            6: 0,
-            7: 2 
-        };
+        const startWeekdays = { 6: 0, 7: 2 };
 
         const appData = {
             6: {
@@ -258,7 +256,6 @@
         }
 
         function switchMonth(month) {
-            // 🌟 新增：切換月份震動回饋
             if (navigator.vibrate) navigator.vibrate(30);
 
             currentMonth = parseInt(month);
@@ -278,9 +275,7 @@
         }
 
         function filterEmployee(empName) {
-            // 🌟 新增：切換濾鏡震動回饋
             if (navigator.vibrate) navigator.vibrate(30);
-            
             currentEmployeeFilter = empName;
             renderCalendarPage();
         }
@@ -297,10 +292,9 @@
             for (let i = 1; i <= daysInMonth; i++) {
                 const isSelected = i === day;
                 const div = document.createElement("div");
-                div.className = `flex flex-col items-center justify-center min-w-[55px] h-[55px] rounded-xl border cursor-pointer transition-all ${isSelected ? 'bg-[#1A1D20] border-[#1A1D20] text-white shadow-md' : 'bg-white border-[#E2E8F0] text-[#2D3748]'}`;
+                div.className = `flex flex-col items-center justify-center min-w-[55px] h-[55px] rounded-xl border cursor-pointer transition-transform duration-100 active:scale-90 ${isSelected ? 'bg-[#1A1D20] border-[#1A1D20] text-white shadow-md' : 'bg-white border-[#E2E8F0] text-[#2D3748]'}`;
                 
                 div.onclick = () => {
-                    // 🌟 新增：單日排班日期切換震動回饋
                     if (navigator.vibrate) navigator.vibrate(30);
                     renderDailyPage(i);
                 };
@@ -358,7 +352,7 @@
                                   (isFilteredWorking ? 'border-amber-400 bg-amber-50 text-[#2D3748]' : 'border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200');
 
                 grid.innerHTML += `
-                    <div onclick="selectCalendarDay(${i})" class="cursor-pointer aspect-square flex flex-col items-center justify-center rounded-xl border-2 ${styleClass} transition-all">
+                    <div onclick="selectCalendarDay(${i})" class="cursor-pointer aspect-square flex flex-col items-center justify-center rounded-xl border-2 ${styleClass} transition-transform duration-100 active:scale-90">
                         <span class="text-sm font-bold">${i}</span>
                         <div class="flex gap-1 mt-0.5">
                             ${hasEarly ? `<span class="w-1.5 h-1.5 rounded-full ${isFilteredWorking ? 'bg-amber-500' : 'bg-amber-400'}"></span>` : '<span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>'}
@@ -370,18 +364,22 @@
             updateCalendarDetail(calendarSelectedDay);
         }
 
-        // 🌟 更新版：點擊月曆時有微震動 + 自動平滑捲動
         function selectCalendarDay(day) {
             calendarSelectedDay = day;
+            currentSelectedDay = day; 
             renderCalendarPage();
             
-            if (navigator.vibrate) {
-                navigator.vibrate(30);
-            }
+            if (navigator.vibrate) navigator.vibrate(30);
             
             setTimeout(() => {
                 const detailCard = document.getElementById("calendar-detail-card");
                 if (detailCard) {
+                    const innerCard = detailCard.firstElementChild;
+                    if(innerCard) {
+                        innerCard.classList.remove("animate-fade-in");
+                        void innerCard.offsetWidth; 
+                        innerCard.classList.add("animate-fade-in");
+                    }
                     detailCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
             }, 50);
@@ -421,7 +419,7 @@
             }
 
             detailContainer.innerHTML = `
-                <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in" key="${currentMonth}-${day}-${currentEmployeeFilter}">
+                <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-base font-black text-[#1A1D20]">${titleText}</span>
                         <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${getWeekdayString(currentMonth, day)}</span>
@@ -489,29 +487,28 @@
         }
 
         function switchPage(page) {
-            // 🌟 新增：底部導覽列切換震動回饋
             if (navigator.vibrate) navigator.vibrate(30);
 
             document.getElementById("page-daily").classList.add("hidden");
             document.getElementById("page-calendar").classList.add("hidden");
             document.getElementById("page-summary").classList.add("hidden");
             
-            document.getElementById("nav-daily").className = "flex flex-col items-center gap-1 text-gray-400";
-            document.getElementById("nav-calendar").className = "flex flex-col items-center gap-1 text-gray-400";
-            document.getElementById("nav-summary").className = "flex flex-col items-center gap-1 text-gray-400";
+            document.getElementById("nav-daily").className = "flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100";
+            document.getElementById("nav-calendar").className = "flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100";
+            document.getElementById("nav-summary").className = "flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100";
 
             if (page === 'daily') {
                 document.getElementById("page-daily").classList.remove("hidden");
-                document.getElementById("nav-daily").className = "flex flex-col items-center gap-1 text-[#1A1D20]";
+                document.getElementById("nav-daily").className = "flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100";
                 dayInitiated = false;
                 renderDailyPage(currentSelectedDay);
             } else if (page === 'calendar') {
                 document.getElementById("page-calendar").classList.remove("hidden");
-                document.getElementById("nav-calendar").className = "flex flex-col items-center gap-1 text-[#1A1D20]";
+                document.getElementById("nav-calendar").className = "flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100";
                 renderCalendarPage();
             } else if (page === 'summary') {
                 document.getElementById("page-summary").classList.remove("hidden");
-                document.getElementById("nav-summary").className = "flex flex-col items-center gap-1 text-[#1A1D20]";
+                document.getElementById("nav-summary").className = "flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100";
                 renderSummaryPage();
             }
         }
