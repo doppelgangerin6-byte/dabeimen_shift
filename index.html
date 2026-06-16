@@ -31,7 +31,6 @@
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚 ⚡</h1>
                 <div class="relative">
-                    <!-- 月份下拉選單 -->
                     <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#1A1D20] text-[#F5C144] border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
                         <option value="6">6月 班表</option>
                         <option value="7">7月 班表</option>
@@ -44,7 +43,7 @@
         <!-- ================= 頁面 1：單日排班 ================= -->
         <div id="page-daily" class="flex flex-col flex-1 p-5 pt-2">
             <div class="flex justify-between items-center mb-4">
-                <p id="daily-title-date" class="text-lg font-bold text-[#1A1D20]">6月15日 (一)</p>
+                <p id="daily-title-date" class="text-lg font-bold text-[#1A1D20]">-</p>
                 <span class="text-xs font-bold bg-white text-gray-500 px-2 py-1 rounded shadow-sm">單日檢視</span>
             </div>
             
@@ -81,7 +80,6 @@
                     <p class="text-[10px] text-gray-400 mt-0.5">點擊日期查看當日名單</p>
                 </div>
                 <div class="relative">
-                    <!-- 同仁專屬濾鏡 -->
                     <select id="employee-filter" onchange="filterEmployee(this.value)" class="appearance-none bg-white border border-[#E2E8F0] text-[#1A1D20] text-xs font-bold py-1.5 pl-2.5 pr-7 rounded-md shadow-sm focus:outline-none cursor-pointer">
                         <option value="all">所有人員</option>
                     </select>
@@ -132,15 +130,12 @@
     </div>
 
     <script>
-        // 🗓️ 每個月第一天是星期幾的設定 (0=一, 1=二, 2=三, 3=四, 4=五, 5=六, 6=日)
         const startWeekdays = {
-            6: 0, // 2026年6月1日是星期一
-            7: 2  // 2026年7月1日是星期三
+            6: 0,
+            7: 2 
         };
 
-        // 🗂️ 核心資料庫 (支援多月份)
         const appData = {
-            // ================= 6月份資料 =================
             6: {
                 days: 30,
                 shifts: {
@@ -186,18 +181,9 @@
                     { "name": "玫如", "totalHours": 18.0, "fullLeaves": [1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 22, 23, 25, 26, 27, 28, 29, 30], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [3, 10, 17, 20, 24] }
                 ]
             },
-            // ================= 7月份資料 (預留空位) =================
-            7: {
-                days: 31,
-                shifts: {
-                    // 這裡可以開始寫入7月的資料，如果沒寫入的日期會自動顯示「無人排班」
-                    // 1: {"早班": [{"name": "測試人員", "hours": "3.5 小時"}], "晚班": []},
-                },
-                stats: [] // 7月的統計資料放這裡
-            }
+            7: { days: 31, shifts: {}, stats: [] }
         };
 
-        // 狀態管理
         let currentMonth = 6;
         let currentSelectedDay = new Date().getDate(); 
         let calendarSelectedDay = currentSelectedDay;
@@ -211,7 +197,6 @@
             return `(${list[index]})`;
         }
 
-        // 取得單日資料 (若沒設定則回傳空的陣列防止當機)
         function getShiftData(month, day) {
             if (appData[month] && appData[month].shifts && appData[month].shifts[day]) {
                 return appData[month].shifts[day];
@@ -227,7 +212,6 @@
             const morningTag = document.getElementById("morning-status-tag");
             const eveningTag = document.getElementById("evening-status-tag");
             
-            // 如果看的是過去或未來的月份
             if (currentMonth < realMonth) {
                 setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
@@ -238,7 +222,6 @@
                 return;
             }
 
-            // 同個月比對日期
             if (day < today) {
                 setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
@@ -337,7 +320,6 @@
             const grid = document.getElementById("calendar-grid");
             grid.innerHTML = "";
 
-            // 補齊月初的空白格子
             const startIdx = startWeekdays[currentMonth] || 0;
             for(let i=0; i<startIdx; i++) {
                 grid.innerHTML += `<div></div>`;
@@ -359,7 +341,6 @@
                     hasLate = shiftData["晚班"].some(e => e.name === currentEmployeeFilter);
                 }
 
-                // 如果有濾鏡，且該員工有上班，給予黃色強調邊框！
                 const isFilteredWorking = (currentEmployeeFilter !== 'all') && (hasEarly || hasLate);
                 const styleClass = isSelected ? 'border-[#1A1D20] bg-[#1A1D20] text-white shadow-md' : 
                                   (isFilteredWorking ? 'border-amber-400 bg-amber-50 text-[#2D3748]' : 'border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200');
@@ -377,44 +358,67 @@
             updateCalendarDetail(calendarSelectedDay);
         }
 
-        function selectCalendarDay(day) {
-            calendarSelectedDay = day;
-            renderCalendarPage();
-        }
-
+        // 🌟 更新日曆明細卡片 (支援專屬搭檔模式)
         function updateCalendarDetail(day) {
             const detailContainer = document.getElementById("calendar-detail-card");
             const shiftData = getShiftData(currentMonth, day);
-            
-            // 強調目前選擇的同仁名字
-            const formatName = (name) => {
-                return name === currentEmployeeFilter ? `<span class="bg-amber-200 text-amber-800 px-1 rounded shadow-sm">${name}</span>` : name;
-            };
 
-            const early = shiftData["早班"].map(e => formatName(e.name));
-            const late = shiftData["晚班"].map(e => formatName(e.name));
+            let titleText = `${currentMonth}月${day}日 出勤名單`;
+            let earlyHtml = '';
+            let lateHtml = '';
+
+            // 全體模式
+            if (currentEmployeeFilter === 'all') {
+                const early = shiftData["早班"].map(e => e.name);
+                const late = shiftData["晚班"].map(e => e.name);
+                earlyHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${early.length ? early.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
+                lateHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${late.length ? late.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
+            } 
+            // 專屬模式
+            else {
+                titleText = `<span class="text-[#1A1D20]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${currentEmployeeFilter} 專屬班表</span>`;
+
+                const myEarly = shiftData["早班"].find(e => e.name === currentEmployeeFilter);
+                const myLate = shiftData["晚班"].find(e => e.name === currentEmployeeFilter);
+                
+                // 抓出當天一起上班的搭檔
+                const otherEarly = shiftData["早班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
+                const otherLate = shiftData["晚班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
+
+                // 早班邏輯
+                earlyHtml = myEarly
+                    ? `<p class="text-sm font-black text-[#2D3748]">${myEarly.hours}</p>`
+                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                if (otherEarly.length > 0) earlyHtml += `<div class="mt-2 pt-1.5 border-t border-amber-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherEarly.join(', ')}</p></div>`;
+
+                // 晚班邏輯
+                lateHtml = myLate
+                    ? `<p class="text-sm font-black text-[#2D3748]">${myLate.hours}</p>`
+                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                if (otherLate.length > 0) lateHtml += `<div class="mt-2 pt-1.5 border-t border-blue-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherLate.join(', ')}</p></div>`;
+            }
 
             detailContainer.innerHTML = `
-                <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in" key="${currentMonth}-${day}">
+                <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in" key="${currentMonth}-${day}-${currentEmployeeFilter}">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-base font-black text-[#1A1D20]">${currentMonth}月${day}日 出勤名單</span>
+                        <span class="text-base font-black text-[#1A1D20]">${titleText}</span>
                         <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${getWeekdayString(currentMonth, day)}</span>
                     </div>
                     <hr class="border-[#EDF2F7] mb-3">
                     <div class="flex gap-3">
-                        <div class="flex-1 bg-[#FFFDF5] rounded-xl p-3 border border-amber-100">
+                        <div class="flex-1 bg-[#FFFDF5] rounded-xl p-3 border border-amber-100 flex flex-col">
                             <div class="flex items-center gap-1.5 mb-2">
                                 <i class="fa-solid fa-sun text-amber-500 text-sm"></i>
                                 <span class="text-xs font-bold text-gray-500">早班</span>
                             </div>
-                            <p class="text-sm font-bold text-[#2D3748] leading-relaxed">${early.length ? early.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>
+                            <div class="flex-1">${earlyHtml}</div>
                         </div>
-                        <div class="flex-1 bg-[#F0F7FF] rounded-xl p-3 border border-blue-100">
+                        <div class="flex-1 bg-[#F0F7FF] rounded-xl p-3 border border-blue-100 flex flex-col">
                             <div class="flex items-center gap-1.5 mb-2">
                                 <i class="fa-solid fa-moon text-indigo-500 text-sm"></i>
                                 <span class="text-xs font-bold text-gray-500">晚班</span>
                             </div>
-                            <p class="text-sm font-bold text-[#2D3748] leading-relaxed">${late.length ? late.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>
+                            <div class="flex-1">${lateHtml}</div>
                         </div>
                     </div>
                 </div>
@@ -487,7 +491,6 @@
             }
         }
 
-        // 初始化
         initEmployeeFilter();
         renderDailyPage(currentSelectedDay);
     </script>
