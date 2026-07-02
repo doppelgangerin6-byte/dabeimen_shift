@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 🌟 強制防快取設定，確保每次打開都是最新班表 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>大北門讚 智能排班App</title>
+    <title>大北門讚 Shift Pro</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -33,10 +32,16 @@
 
     <div class="w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-24 min-h-screen">
         
-        <!-- ================= 全域頂部導覽列 ================= -->
+        <!-- ================= 全域頂部導覽列 (加入氣象膠囊) ================= -->
         <div class="px-5 pt-6 pb-2 sticky top-0 z-40 bg-[#F4F6F8]">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚 ⚡</h1>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚</h1>
+                    <!-- 氣象小工具 -->
+                    <div id="weather-widget" class="flex items-center gap-1 bg-white border border-[#E2E8F0] text-gray-600 px-2 py-1 rounded-lg text-xs font-bold shadow-sm transition-all duration-300">
+                        <i class="fa-solid fa-spinner fa-spin text-gray-400"></i>
+                    </div>
+                </div>
                 <div class="relative active:scale-95 transition-transform duration-100">
                     <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#1A1D20] text-[#F5C144] border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
                         <option value="7">7月 班表</option>
@@ -244,16 +249,13 @@
             }
         };
 
-        // ====== 🌟 核心升級：自動抓取手機時間系統 ======
         const systemDate = new Date();
         const realMonth = systemDate.getMonth() + 1;
         const realDay = systemDate.getDate();
 
-        // 智慧判斷：如果現在是 7 月，就鎖定 7 月；如果超前到 8 月但系統還沒排，就顯示最新的月份
         let currentMonth = appData[realMonth] ? realMonth : Math.max(...Object.keys(appData).map(Number));
         let currentSelectedDay = realDay;
 
-        // 防呆：如果今天是 31 號，但切換到的月份只有 30 天，自動退回最後一天
         if (currentSelectedDay > appData[currentMonth].days) {
             currentSelectedDay = appData[currentMonth].days;
         }
@@ -312,16 +314,19 @@
                 setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
             } else {
+                // 早班 08:30 - 12:30
                 if (hour < 8) setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 else if (hour >= 8 && hour < 13) setTag(morningTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 
+                // 午班 13:30 - 17:00
                 if (hour < 13) setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 else if (hour >= 13 && hour < 17) setTag(midTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 
+                // 🌟 修正：晚班 14:30 / 17:30 到晚上 20:00 (超過 20 點自動判定下班)
                 if (hour < 14) setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                else if (hour >= 14 && hour <= 21) setTag(eveningTag, "🟢 上班中", "bg-green-50 text-green-600");
+                else if (hour >= 14 && hour < 20) setTag(eveningTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
             }
         }
@@ -391,7 +396,6 @@
                 div.innerHTML = `<span class="text-base font-bold ${isSelected ? 'text-[#F5C144]' : ''}">${i}</span><span class="text-[9px] ${isSelected ? 'text-white/70' : 'text-gray-400'} font-bold">${getWeekdayString(currentMonth, i)}</span>`;
                 slider.appendChild(div);
                 
-                // 🌟 新增：一打開網頁，滑桿自動捲動到「今天日期」的置中位置
                 if (isSelected && !dayInitiated) {
                     setTimeout(() => {
                         div.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
@@ -647,7 +651,32 @@
             }
         }
 
-        // 🌟 啟動時：把下拉選單強制同步為「自動判定的當前月份」
+        // 🌟 串接即時氣象功能 (使用開源 Open-Meteo API)
+        async function fetchWeather() {
+            try {
+                const widget = document.getElementById("weather-widget");
+                // 預設抓取台灣氣象資料 (大約為桃園一帶座標)
+                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=25.03&longitude=121.30&current_weather=true");
+                const data = await res.json();
+                
+                const temp = Math.round(data.current_weather.temperature);
+                const code = data.current_weather.weathercode;
+                
+                let icon = "☁️";
+                if (code === 0) icon = "☀️";
+                else if (code >= 1 && code <= 3) icon = "⛅";
+                else if (code >= 45 && code <= 48) icon = "🌫️";
+                else if (code >= 51 && code <= 67) icon = "🌧️";
+                else if (code >= 71 && code <= 77) icon = "❄️";
+                else if (code >= 80 && code <= 82) icon = "🌧️";
+                else if (code >= 95) icon = "⛈️";
+
+                widget.innerHTML = `<span>${icon}</span><span>${temp}°C</span>`;
+            } catch (e) {
+                document.getElementById("weather-widget").innerHTML = `<span>☁️</span><span>--°C</span>`;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const globalMonthSelect = document.getElementById("global-month");
             if (globalMonthSelect) {
@@ -658,6 +687,16 @@
 
             initEmployeeFilter();
             renderDailyPage(currentSelectedDay);
+
+            // 啟動氣象服務
+            fetchWeather();
+            // 每 30 分鐘更新一次氣象
+            setInterval(fetchWeather, 30 * 60 * 1000);
+
+            // 🌟 啟動心跳神經：每 1 分鐘自動檢查是否到了下班時間
+            setInterval(() => {
+                updateSmartStatus(currentSelectedDay);
+            }, 60000); 
         });
 
     </script>
