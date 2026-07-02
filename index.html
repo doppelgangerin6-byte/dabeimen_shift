@@ -33,8 +33,8 @@
                 <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚 ⚡</h1>
                 <div class="relative active:scale-95 transition-transform duration-100">
                     <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#1A1D20] text-[#F5C144] border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
+                        <option value="7" selected>7月 班表</option>
                         <option value="6">6月 班表</option>
-                        <option value="7">7月 班表</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[#F5C144] text-xs pointer-events-none"></i>
                 </div>
@@ -53,6 +53,8 @@
             <h2 class="text-sm font-bold text-gray-700 mt-5 mb-2"><i class="fa-regular fa-clipboard mr-1.5"></i>當日出勤名單</h2>
             
             <div class="flex flex-col gap-4 flex-1 overflow-y-auto no-scrollbar">
+                
+                <!-- 早班區塊 -->
                 <div class="bg-[#FFFDF5] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-sm font-bold text-[#1A1D20]">☀️ 早班同仁 (08:30)</span>
@@ -61,10 +63,21 @@
                     <hr class="border-[#EDF2F7] mb-2">
                     <div id="morning-staff-list" class="flex flex-col gap-2"></div>
                 </div>
+
+                <!-- 🍵 午班區塊 (智慧顯示：有排班才會出現) -->
+                <div id="mid-shift-card" class="bg-[#F0FFF4] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm hidden">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm font-bold text-[#1A1D20]">🍵 午班同仁 (13:30)</span>
+                        <span id="mid-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">-</span>
+                    </div>
+                    <hr class="border-[#EDF2F7] mb-2">
+                    <div id="mid-staff-list" class="flex flex-col gap-2"></div>
+                </div>
                 
+                <!-- 晚班區塊 -->
                 <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-bold text-[#1A1D20]">🌙 晚班同仁 (17:30)</span>
+                        <span class="text-sm font-bold text-[#1A1D20]">🌙 晚班同仁 (14:30/17:30)</span>
                         <span id="evening-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">-</span>
                     </div>
                     <hr class="border-[#EDF2F7] mb-2">
@@ -77,7 +90,7 @@
         <div id="page-calendar" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <p class="text-lg font-bold text-[#1A1D20]" id="calendar-title-month">6月 班表日曆</p>
+                    <p class="text-lg font-bold text-[#1A1D20]" id="calendar-title-month">7月 班表日曆</p>
                     <p class="text-[10px] text-gray-400 mt-0.5">點擊日期查看當日名單</p>
                 </div>
                 <div class="relative active:scale-95 transition-transform duration-100">
@@ -107,7 +120,7 @@
         <!-- ================= 頁面 3：同仁統計 ================= -->
         <div id="page-summary" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="mb-4">
-                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">6月 同仁出勤統計</p>
+                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">7月 同仁出勤統計</p>
             </div>
             <div id="employee-summary-list" class="flex flex-col gap-3 flex-1 overflow-y-auto no-scrollbar"></div>
         </div>
@@ -131,8 +144,9 @@
     </div>
 
     <script>
-        const startWeekdays = { 6: 0, 7: 2 };
+        const startWeekdays = { 6: 0, 7: 2 }; // 6月1日是週一, 7月1日是週三
 
+        // 🌟 自動匯入的智慧資料庫
         const appData = {
             6: {
                 days: 30,
@@ -179,10 +193,56 @@
                     { "name": "玫如", "totalHours": 18.0, "fullLeaves": [1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 22, 23, 25, 26, 27, 28, 29, 30], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [3, 10, 17, 20, 24] }
                 ]
             },
-            7: { days: 31, shifts: {}, stats: [] }
+            7: {
+                "days": 31,
+                "shifts": {
+                  "1": { "早班": [ { "name": "玫如", "hours": "3.5 小時" }, { "name": "俞涵", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "禹彤", "hours": "2.0 小時" }, { "name": "瑋琳", "hours": "2.5 小時" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "2": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "5.0 小時" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "14:30 - 19:30" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "3": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "5.0 小時" } ] },
+                  "4": { "早班": [ { "name": "玫如", "hours": "4.0 小時" }, { "name": "宜臻", "hours": "4.0 小時" }, { "name": "柔汶", "hours": "4.0 小時" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "4.0 小時" }, { "name": "謝允", "hours": "4.0 小時" } ], "午班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "晚班": [] },
+                  "5": { "早班": [], "午班": [], "晚班": [] },
+                  "6": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "5.0 小時" }, { "name": "瑋琳", "hours": "14:30 - 19:30" } ] },
+                  "7": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "昀岱", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "昀岱", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "8": { "早班": [ { "name": "玫如", "hours": "3.5 小時" }, { "name": "俞涵", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "禹彤", "hours": "2.0 小時" }, { "name": "瑋琳", "hours": "2.5 小時" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "9": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "5.0 小時" }, { "name": "昀岱", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "14:30 - 19:30" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "10": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "5.0 小時" }, { "name": "瑋琳", "hours": "14:30 - 19:30" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "11": { "早班": [ { "name": "玫如", "hours": "4.0 小時" }, { "name": "宜臻", "hours": "4.0 小時" }, { "name": "柔汶", "hours": "4.0 小時" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "4.0 小時" }, { "name": "謝允", "hours": "4.0 小時" } ], "午班": [], "晚班": [] },
+                  "12": { "早班": [], "午班": [], "晚班": [] },
+                  "13": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "14": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "5.0 小時" }, { "name": "瑋琳", "hours": "14:30 - 19:30" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "15": { "早班": [ { "name": "玫如", "hours": "3.5 小時" }, { "name": "俞涵", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "禹彤", "hours": "2.0 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "16": { "早班": [ { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "昀岱", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "17": { "早班": [ { "name": "柔汶", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "柔汶", "hours": "5.0 小時" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "14:30 - 19:30" }, { "name": "謝允", "hours": "5.0 小時" } ] },
+                  "18": { "早班": [ { "name": "玫如", "hours": "4.0 小時" }, { "name": "俞涵", "hours": "4.0 小時" }, { "name": "宜臻", "hours": "4.0 小時" }, { "name": "昀岱", "hours": "4.0 小時" }, { "name": "柔汶", "hours": "4.0 小時" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "謝允", "hours": "4.0 小時" }, { "name": "羿寧", "hours": "4.0 小時" } ], "午班": [], "晚班": [] },
+                  "19": { "早班": [], "午班": [], "晚班": [] },
+                  "20": { "早班": [ { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "21": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "22": { "早班": [ { "name": "玫如", "hours": "3.5 小時" }, { "name": "俞涵", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "23": { "早班": [ { "name": "柔汶", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "24": { "早班": [], "午班": [], "晚班": [ { "name": "羿寧", "hours": "4.5 小時" } ] },
+                  "25": { "早班": [], "午班": [], "晚班": [] },
+                  "26": { "早班": [], "午班": [], "晚班": [] },
+                  "27": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "28": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "29": { "早班": [ { "name": "玫如", "hours": "3.5 小時" }, { "name": "俞涵", "hours": "3.5 小時" }, { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "禹彤", "hours": "2.0 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "30": { "早班": [ { "name": "禹彤", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" }, { "name": "羿寧", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" }, { "name": "羿寧", "hours": "5.0 小時" } ] },
+                  "31": { "早班": [ { "name": "宜臻", "hours": "3.5 小時" }, { "name": "瑋琳", "hours": "3.5 小時" }, { "name": "謝允", "hours": "3.5 小時" } ], "午班": [], "晚班": [ { "name": "宜臻", "hours": "14:30 - 19:30" }, { "name": "禹彤", "hours": "4.5 小時" }, { "name": "瑋琳", "hours": "5.0 小時" }, { "name": "謝允", "hours": "5.0 小時" } ] }
+                },
+                "stats": [
+                  { "name": "玫如", "totalHours": 29.5, "fullLeaves": [2, 3, 5, 6, 7, 9, 10, 12, 13, 14, 16, 17, 19, 20, 21, 23, 24, 25, 26, 27, 28, 30, 31], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "俞涵", "totalHours": 21.5, "fullLeaves": [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 23, 24, 25, 26, 27, 28, 30, 31], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "宜臻", "totalHours": 117.5, "fullLeaves": [5, 12, 15, 16, 17, 19, 20, 22, 23, 24, 25, 26, 29], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "昀岱", "totalHours": 21.5, "fullLeaves": [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "柔汶", "totalHours": 24.0, "fullLeaves": [1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "禹彤", "totalHours": 84.5, "fullLeaves": [5, 6, 7, 9, 10, 12, 13, 14, 16, 19, 20, 22, 24, 25, 26, 27], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "瑋琳", "totalHours": 178.0, "fullLeaves": [5, 7, 12, 18, 19, 24, 25, 26], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "謝允", "totalHours": 182.0, "fullLeaves": [3, 5, 6, 12, 19, 24, 25, 26], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] },
+                  { "name": "羿寧", "totalHours": 110.5, "fullLeaves": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 19, 25, 26, 31], "morningLeaves": [], "midLeaves": [], "eveningLeaves": [] }
+                ]
+            }
         };
 
-        let currentMonth = 6;
+        let currentMonth = 7;
         let currentSelectedDay = new Date().getDate(); 
         let calendarSelectedDay = currentSelectedDay;
         let currentEmployeeFilter = 'all';
@@ -195,11 +255,17 @@
             return `(${list[index]})`;
         }
 
+        // 🌟 強化版資料讀取 (支援午班)
         function getShiftData(month, day) {
             if (appData[month] && appData[month].shifts && appData[month].shifts[day]) {
-                return appData[month].shifts[day];
+                const sd = appData[month].shifts[day];
+                return {
+                    "早班": sd["早班"] || [],
+                    "午班": sd["午班"] || [],
+                    "晚班": sd["晚班"] || []
+                };
             }
-            return { "早班": [], "晚班": [] };
+            return { "早班": [], "午班": [], "晚班": [] };
         }
 
         function updateSmartStatus(day) {
@@ -207,32 +273,45 @@
             const realMonth = now.getMonth() + 1;
             const today = now.getDate();
             const hour = now.getHours();
+            
             const morningTag = document.getElementById("morning-status-tag");
+            const midTag = document.getElementById("mid-status-tag");
             const eveningTag = document.getElementById("evening-status-tag");
             
             if (currentMonth < realMonth) {
                 setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
+                setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 return;
             } else if (currentMonth > realMonth) {
                 setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
+                setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 return;
             }
 
             if (day < today) {
                 setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
+                setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
             } else if (day > today) {
                 setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
+                setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
             } else {
+                // 早班 08:30 - 12:30
                 if (hour < 8) setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                else if (hour >= 8 && hour < 17) setTag(morningTag, "🟢 上班中", "bg-green-50 text-green-600");
+                else if (hour >= 8 && hour < 13) setTag(morningTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 
-                if (hour < 17) setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                else if (hour >= 17 && hour <= 23) setTag(eveningTag, "🟢 上班中", "bg-green-50 text-green-600");
+                // 午班 13:30 - 17:00
+                if (hour < 13) setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
+                else if (hour >= 13 && hour < 17) setTag(midTag, "🟢 上班中", "bg-green-50 text-green-600");
+                else setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
+                
+                // 晚班 (廣義) 14:30 / 17:30 - 21:00
+                if (hour < 14) setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
+                else if (hour >= 14 && hour <= 21) setTag(eveningTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
             }
         }
@@ -308,18 +387,34 @@
             dayInitiated = true;
 
             const morningList = document.getElementById("morning-staff-list");
+            const midCard = document.getElementById("mid-shift-card");
+            const midList = document.getElementById("mid-staff-list");
             const eveningList = document.getElementById("evening-staff-list");
-            morningList.innerHTML = ""; eveningList.innerHTML = "";
+            
+            morningList.innerHTML = ""; midList.innerHTML = ""; eveningList.innerHTML = "";
 
             const shiftData = getShiftData(currentMonth, day);
             const morningData = shiftData["早班"];
+            const midData = shiftData["午班"];
             const eveningData = shiftData["晚班"];
 
             if (morningData.length === 0) morningList.innerHTML = `<p class="text-xs text-gray-400 py-1">今日無人排班 / 休假</p>`;
             else morningData.forEach(p => morningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
 
+            // 🌟 智慧判斷：這天有午班，才把午班區塊顯示出來！
+            if (midData.length > 0) {
+                midCard.classList.remove("hidden");
+                midData.forEach(p => midList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
+            } else {
+                midCard.classList.add("hidden");
+            }
+
             if (eveningData.length === 0) eveningList.innerHTML = `<p class="text-xs text-gray-400 py-1">今日無人排班 / 休假</p>`;
-            else eveningData.forEach(p => eveningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
+            else eveningData.forEach(p => {
+                // 如果是提早班的紅字，給他特別加粗顯示！
+                let hrFormat = p.hours === "14:30 - 19:30" ? `<span class="text-red-500 font-bold">${p.hours}</span>` : `<span class="text-xs text-gray-500 font-medium">${p.hours}</span>`;
+                eveningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span>${hrFormat}</div>`;
+            });
         }
 
         function renderCalendarPage() {
@@ -337,26 +432,31 @@
                 const isSelected = i === calendarSelectedDay;
 
                 let hasEarly = false;
+                let hasMid = false;
                 let hasLate = false;
 
                 if (currentEmployeeFilter === 'all') {
                     hasEarly = shiftData["早班"].length > 0;
+                    hasMid = shiftData["午班"].length > 0;
                     hasLate = shiftData["晚班"].length > 0;
                 } else {
                     hasEarly = shiftData["早班"].some(e => e.name === currentEmployeeFilter);
+                    hasMid = shiftData["午班"].some(e => e.name === currentEmployeeFilter);
                     hasLate = shiftData["晚班"].some(e => e.name === currentEmployeeFilter);
                 }
 
-                const isFilteredWorking = (currentEmployeeFilter !== 'all') && (hasEarly || hasLate);
+                const isFilteredWorking = (currentEmployeeFilter !== 'all') && (hasEarly || hasMid || hasLate);
                 const styleClass = isSelected ? 'border-[#1A1D20] bg-[#1A1D20] text-white shadow-md' : 
                                   (isFilteredWorking ? 'border-amber-400 bg-amber-50 text-[#2D3748]' : 'border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200');
 
+                // 🌟 新增了綠色的「午班小圓點」
                 grid.innerHTML += `
                     <div onclick="selectCalendarDay(${i})" class="cursor-pointer aspect-square flex flex-col items-center justify-center rounded-xl border-2 ${styleClass} transition-transform duration-100 active:scale-90">
                         <span class="text-sm font-bold">${i}</span>
-                        <div class="flex gap-1 mt-0.5">
-                            ${hasEarly ? `<span class="w-1.5 h-1.5 rounded-full ${isFilteredWorking ? 'bg-amber-500' : 'bg-amber-400'}"></span>` : '<span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>'}
-                            ${hasLate ? `<span class="w-1.5 h-1.5 rounded-full ${isFilteredWorking ? 'bg-indigo-500' : 'bg-indigo-400'}"></span>` : '<span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>'}
+                        <div class="flex gap-0.5 mt-0.5 px-0.5 flex-wrap justify-center w-full">
+                            ${hasEarly ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? 'bg-amber-500' : 'bg-amber-400'}"></span>` : ''}
+                            ${hasMid ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? 'bg-emerald-500' : 'bg-emerald-400'}"></span>` : ''}
+                            ${hasLate ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? 'bg-indigo-500' : 'bg-indigo-400'}"></span>` : ''}
                         </div>
                     </div>
                 `;
@@ -391,32 +491,53 @@
 
             let titleText = `${currentMonth}月${day}日 出勤名單`;
             let earlyHtml = '';
+            let midHtml = '';
             let lateHtml = '';
+
+            const hasMidShiftInDay = shiftData["午班"].length > 0;
 
             if (currentEmployeeFilter === 'all') {
                 const early = shiftData["早班"].map(e => e.name);
-                const late = shiftData["晚班"].map(e => e.name);
+                const mid = shiftData["午班"].map(e => e.name);
+                const late = shiftData["晚班"].map(e => {
+                    return e.hours === "14:30 - 19:30" ? `<span class="text-red-500">${e.name}</span>` : e.name;
+                });
                 earlyHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${early.length ? early.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
+                midHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${mid.length ? mid.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
                 lateHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${late.length ? late.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
             } else {
                 titleText = `<span class="text-[#1A1D20]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${currentEmployeeFilter} 專屬班表</span>`;
 
                 const myEarly = shiftData["早班"].find(e => e.name === currentEmployeeFilter);
+                const myMid = shiftData["午班"].find(e => e.name === currentEmployeeFilter);
                 const myLate = shiftData["晚班"].find(e => e.name === currentEmployeeFilter);
                 
                 const otherEarly = shiftData["早班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
+                const otherMid = shiftData["午班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
                 const otherLate = shiftData["晚班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
 
-                earlyHtml = myEarly
-                    ? `<p class="text-sm font-black text-[#2D3748]">${myEarly.hours}</p>`
-                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                earlyHtml = myEarly ? `<p class="text-sm font-black text-[#2D3748]">${myEarly.hours}</p>` : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
                 if (otherEarly.length > 0) earlyHtml += `<div class="mt-2 pt-1.5 border-t border-amber-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherEarly.join(', ')}</p></div>`;
 
-                lateHtml = myLate
-                    ? `<p class="text-sm font-black text-[#2D3748]">${myLate.hours}</p>`
-                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                midHtml = myMid ? `<p class="text-sm font-black text-[#2D3748]">${myMid.hours}</p>` : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                if (otherMid.length > 0) midHtml += `<div class="mt-2 pt-1.5 border-t border-green-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherMid.join(', ')}</p></div>`;
+
+                let mlFormat = myLate ? (myLate.hours === "14:30 - 19:30" ? `<span class="text-red-500 font-black">${myLate.hours}</span>` : `<span class="text-[#2D3748] font-black">${myLate.hours}</span>`) : `<span class="text-gray-400 font-bold">休假 🏖️</span>`;
+                lateHtml = `<p class="text-sm">${mlFormat}</p>`;
                 if (otherLate.length > 0) lateHtml += `<div class="mt-2 pt-1.5 border-t border-blue-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherLate.join(', ')}</p></div>`;
             }
+
+            // 🌟 智慧排版：如果當天有午班，卡片改為垂直排列以容納所有資訊；沒有的話就維持水平並排。
+            const containerClass = hasMidShiftInDay ? "flex flex-col gap-3" : "flex gap-3";
+            const midCardHtml = hasMidShiftInDay ? `
+                <div class="flex-1 bg-[#F0FFF4] rounded-xl p-3 border border-green-100 flex flex-col">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <i class="fa-solid fa-mug-hot text-emerald-500 text-sm"></i>
+                        <span class="text-xs font-bold text-gray-500">午班 (周教授)</span>
+                    </div>
+                    <div class="flex-1">${midHtml}</div>
+                </div>
+            ` : '';
 
             detailContainer.innerHTML = `
                 <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in">
@@ -425,7 +546,7 @@
                         <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${getWeekdayString(currentMonth, day)}</span>
                     </div>
                     <hr class="border-[#EDF2F7] mb-3">
-                    <div class="flex gap-3">
+                    <div class="${containerClass}">
                         <div class="flex-1 bg-[#FFFDF5] rounded-xl p-3 border border-amber-100 flex flex-col">
                             <div class="flex items-center gap-1.5 mb-2">
                                 <i class="fa-solid fa-sun text-amber-500 text-sm"></i>
@@ -433,6 +554,9 @@
                             </div>
                             <div class="flex-1">${earlyHtml}</div>
                         </div>
+                        
+                        ${midCardHtml}
+
                         <div class="flex-1 bg-[#F0F7FF] rounded-xl p-3 border border-blue-100 flex flex-col">
                             <div class="flex items-center gap-1.5 mb-2">
                                 <i class="fa-solid fa-moon text-indigo-500 text-sm"></i>
@@ -457,10 +581,11 @@
 
             statsData.forEach(emp => {
                 let chipsHtml = "";
-                chipsHtml += makeChips("全日休", emp.fullLeaves, "bg-red-50 border-red-100 text-red-500");
-                chipsHtml += makeChips("早班休", emp.morningLeaves, "bg-amber-50 border-amber-100 text-amber-600");
-                chipsHtml += makeChips("午班休", emp.midLeaves, "bg-green-50 border-green-100 text-green-600");
-                chipsHtml += makeChips("晚班休", emp.eveningLeaves, "bg-blue-50 border-blue-100 text-blue-600");
+                // 7月份因為直接程式抓取，統一顯示全日休假天數
+                chipsHtml += makeChips("休假日", emp.fullLeaves, "bg-gray-50 border-gray-200 text-gray-600");
+                if(emp.morningLeaves.length > 0) chipsHtml += makeChips("早班休", emp.morningLeaves, "bg-amber-50 border-amber-100 text-amber-600");
+                if(emp.midLeaves.length > 0) chipsHtml += makeChips("午班休", emp.midLeaves, "bg-green-50 border-green-100 text-green-600");
+                if(emp.eveningLeaves.length > 0) chipsHtml += makeChips("晚班休", emp.eveningLeaves, "bg-blue-50 border-blue-100 text-blue-600");
 
                 container.innerHTML += `
                     <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm">
