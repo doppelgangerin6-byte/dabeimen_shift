@@ -26,11 +26,128 @@
         select { -webkit-tap-highlight-color: transparent; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+
+        /* v10：柔霧透明玻璃感 */
+        .glass-card {
+            -webkit-backdrop-filter: blur(18px) saturate(135%);
+            backdrop-filter: blur(18px) saturate(135%);
+            border: 1px solid rgba(255, 255, 255, 0.82);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+        }
+        .glass-card-morning {
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(255,248,222,.58), rgba(255,255,255,.72));
+        }
+        .glass-card-mid {
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(220,252,231,.48), rgba(255,255,255,.72));
+        }
+        .glass-card-evening {
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(238,242,255,.52), rgba(255,255,255,.72));
+        }
+        .time-pill {
+            -webkit-backdrop-filter: blur(12px) saturate(145%);
+            backdrop-filter: blur(12px) saturate(145%);
+            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255,255,255,.95);
+        }
+        .time-pill-morning { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,237,179,.52)); border-color: rgba(245,158,11,.30); color: #B45309; }
+        .time-pill-mid { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(187,247,208,.48)); border-color: rgba(16,185,129,.26); color: #047857; }
+        .time-pill-purple { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(237,233,254,.68)); border-color: rgba(139,92,246,.28); color: #7C3AED; }
+        .time-pill-red { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(254,226,226,.66)); border-color: rgba(239,68,68,.28); color: #EF4444; }
+        .time-pill-green { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(209,250,229,.64)); border-color: rgba(16,185,129,.28); color: #059669; }
+        .time-pill-late { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(226,232,240,.70)); border-color: rgba(100,116,139,.28); color: #334155; }
+        .time-pill-gray { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(229,231,235,.68)); border-color: rgba(107,114,128,.24); color: #4B5563; }
+
+
+        /* v12：底部玻璃導覽列 */
+        .bottom-nav-shell {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 28rem;
+            padding: 9px 14px calc(9px + env(safe-area-inset-bottom));
+            background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(248,250,252,.94));
+            -webkit-backdrop-filter: blur(24px) saturate(165%);
+            backdrop-filter: blur(24px) saturate(165%);
+            border-top: 1px solid rgba(255,255,255,.95);
+            box-shadow: 0 -12px 34px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.96);
+            z-index: 50;
+        }
+        .bottom-nav-inner {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .nav-button {
+            position: relative;
+            min-width: 0;
+            min-height: 58px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border-radius: 18px;
+            color: #94A3B8;
+            transition: transform .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+        .nav-button:active { transform: scale(.94); }
+        .nav-icon-wrap {
+            width: 38px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,.88);
+            border-radius: 13px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 4px 12px rgba(15,23,42,.05);
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+        .nav-button i { font-size: 17px; }
+        .nav-label {
+            font-size: 10px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+        .nav-calendar .nav-icon-wrap {
+            color: #3B82F6;
+            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(219,234,254,.78));
+        }
+        .nav-daily .nav-icon-wrap {
+            color: #D97706;
+            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(254,243,199,.82));
+        }
+        .nav-leave .nav-icon-wrap {
+            color: #8B5CF6;
+            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(237,233,254,.82));
+        }
+        .nav-button.active {
+            color: #172033;
+            background: rgba(255,255,255,.72);
+            box-shadow: 0 8px 22px rgba(15,23,42,.09), inset 0 1px 0 rgba(255,255,255,.96);
+            transform: translateY(-2px);
+        }
+        .nav-button.active .nav-icon-wrap {
+            transform: translateY(-2px) scale(1.08);
+            box-shadow: 0 8px 18px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,1);
+        }
+        .nav-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 18px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(245,193,68,.28), #F5C144, rgba(245,193,68,.28));
+            box-shadow: 0 0 10px rgba(245,193,68,.34);
+        }
     </style>
 </head>
 <body class="bg-[#F4F6F8] flex justify-center min-h-screen">
 
-    <div class="w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-24 min-h-screen">
+    <div class="w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-28 min-h-screen">
         
         <!-- ================= 全域頂部導覽列 (加入氣象膠囊) ================= -->
         <div class="px-5 pt-6 pb-2 sticky top-0 z-40 bg-[#F4F6F8]">
@@ -38,8 +155,9 @@
                 <div class="flex items-center gap-2">
                     <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚</h1>
                     <!-- 氣象小工具 -->
-                    <div id="weather-widget" class="flex items-center gap-1 bg-white border border-[#E2E8F0] text-gray-600 px-2 py-1 rounded-lg text-xs font-bold shadow-sm transition-all duration-300">
+                    <div id="weather-widget" class="flex items-center gap-1.5 bg-white border border-[#E2E8F0] text-gray-600 px-2.5 py-1.5 rounded-xl text-sm font-bold shadow-sm transition-all duration-300 max-w-[145px] min-w-0" title="即時天氣與定位地區">
                         <i class="fa-solid fa-spinner fa-spin text-gray-400"></i>
+                        <span class="text-xs truncate">定位中</span>
                     </div>
                 </div>
                 <div class="relative active:scale-95 transition-transform duration-100">
@@ -63,33 +181,44 @@
             
             <h2 class="text-sm font-bold text-gray-700 mt-5 mb-2"><i class="fa-regular fa-clipboard mr-1.5"></i>當日出勤名單</h2>
             
-            <div class="flex flex-col gap-4 flex-1 overflow-y-auto no-scrollbar">
-                
-                <div class="bg-[#FFFDF5] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-bold text-[#1A1D20]">☀️ 早班同仁 (08:30)</span>
-                        <span id="morning-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">-</span>
+            <div class="flex-1 overflow-y-auto no-scrollbar">
+                <div id="public-holiday-card" class="hidden bg-gradient-to-br from-rose-50 via-white to-amber-50 border border-rose-100 rounded-3xl p-6 shadow-sm text-center animate-fade-in">
+                    <div class="text-5xl mb-3">🐣</div>
+                    <p class="text-xl font-black text-[#1A1D20]">星期日公休</p>
+                    <p class="text-sm font-bold text-rose-400 mt-1">今天安心充電，明天再一起開工 ✨</p>
+                    <div class="mt-4 inline-flex items-center gap-2 bg-white/90 border border-rose-100 text-rose-500 px-3 py-1.5 rounded-full text-xs font-black shadow-sm">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        <span>大北門讚休息中</span>
                     </div>
-                    <hr class="border-[#EDF2F7] mb-2">
-                    <div id="morning-staff-list" class="flex flex-col gap-2"></div>
                 </div>
 
-                <div id="mid-shift-card" class="bg-[#F0FFF4] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm hidden">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-bold text-[#1A1D20]">🍵 午班同仁 (13:30)</span>
-                        <span id="mid-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">-</span>
+                <div id="daily-shift-cards" class="flex flex-col gap-4">
+                    <div class="glass-card glass-card-morning rounded-2xl p-4">
+                        <div class="flex justify-between items-center mb-3 gap-2">
+                            <span id="morning-shift-title" class="text-sm font-bold text-[#1A1D20]">☀️ 早班同仁</span>
+                            <span id="morning-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 shrink-0">-</span>
+                        </div>
+                        <hr class="border-[#EDF2F7] mb-2">
+                        <div id="morning-staff-list" class="flex flex-col gap-2"></div>
                     </div>
-                    <hr class="border-[#EDF2F7] mb-2">
-                    <div id="mid-staff-list" class="flex flex-col gap-2"></div>
-                </div>
-                
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-bold text-[#1A1D20]">🌙 晚班同仁 (14:30/17:30)</span>
-                        <span id="evening-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">-</span>
+
+                    <div id="mid-shift-card" class="glass-card glass-card-mid rounded-2xl p-4 hidden">
+                        <div class="flex justify-between items-center mb-3 gap-2">
+                            <span id="mid-shift-title" class="text-sm font-bold text-[#1A1D20]">🍵 午班同仁 (13:30 - 17:00)</span>
+                            <span id="mid-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 shrink-0">-</span>
+                        </div>
+                        <hr class="border-[#EDF2F7] mb-2">
+                        <div id="mid-staff-list" class="flex flex-col gap-2"></div>
                     </div>
-                    <hr class="border-[#EDF2F7] mb-2">
-                    <div id="evening-staff-list" class="flex flex-col gap-2"></div>
+                    
+                    <div class="glass-card glass-card-evening rounded-2xl p-4">
+                        <div class="flex justify-between items-center mb-3 gap-2">
+                            <span id="evening-shift-title" class="text-sm font-bold text-[#1A1D20]">🌙 晚班同仁</span>
+                            <span id="evening-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 shrink-0">-</span>
+                        </div>
+                        <hr class="border-[#EDF2F7] mb-2">
+                        <div id="evening-staff-list" class="flex flex-col gap-2"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,29 +254,31 @@
             <div id="calendar-detail-card"></div>
         </div>
 
-        <!-- ================= 頁面 3：同仁統計 ================= -->
+        <!-- ================= 頁面 3：休假總覽 ================= -->
         <div id="page-summary" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="mb-4">
-                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">-月 同仁出勤統計</p>
+                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">-月 休假總覽</p>
             </div>
             <div id="employee-summary-list" class="flex flex-col gap-3 flex-1 overflow-y-auto no-scrollbar"></div>
         </div>
 
         <!-- ================= 底部導覽列 ================= -->
-        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md h-16 bg-white border-t border-gray-200 flex justify-around items-center shadow-lg z-50">
-            <button onclick="switchPage('daily')" id="nav-daily" class="flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100">
-                <i class="fa-solid fa-calendar-day text-lg"></i>
-                <span class="text-[10px] font-bold">單日排班</span>
-            </button>
-            <button onclick="switchPage('calendar')" id="nav-calendar" class="flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100">
-                <i class="fa-solid fa-calendar-days text-lg"></i>
-                <span class="text-[10px] font-bold">月曆總覽</span>
-            </button>
-            <button onclick="switchPage('summary')" id="nav-summary" class="flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100">
-                <i class="fa-solid fa-chart-pie text-lg"></i>
-                <span class="text-[10px] font-bold">同仁統計</span>
-            </button>
-        </div>
+        <nav class="bottom-nav-shell" aria-label="主要功能">
+            <div class="bottom-nav-inner">
+                <button onclick="switchPage('calendar')" id="nav-calendar" class="nav-button nav-calendar" aria-label="月曆總覽">
+                    <span class="nav-icon-wrap"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span class="nav-label">月曆總覽</span>
+                </button>
+                <button onclick="switchPage('daily')" id="nav-daily" class="nav-button nav-daily active" aria-label="單日排班">
+                    <span class="nav-icon-wrap"><i class="fa-solid fa-calendar-check"></i></span>
+                    <span class="nav-label">單日排班</span>
+                </button>
+                <button onclick="switchPage('summary')" id="nav-summary" class="nav-button nav-leave" aria-label="休假總覽">
+                    <span class="nav-icon-wrap"><i class="fa-solid fa-umbrella-beach"></i></span>
+                    <span class="nav-label">休假總覽</span>
+                </button>
+            </div>
+        </nav>
 
     </div>
 
@@ -249,6 +380,483 @@
             }
         };
 
+
+        // ===== Excel 班表色碼與固定時段（115年7月） =====
+        const scheduleYear = 2026;
+        const eveningShiftMeta = {
+            "7": {
+                        "1": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 17:00",
+                                                "tone": "purple"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "2": {
+                                    "宜臻": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "3": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    }
+                        },
+                        "6": {
+                                    "宜臻": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "7": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "昀岱": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "8": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 17:00",
+                                                "tone": "purple"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "9": {
+                                    "宜臻": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "昀岱": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "10": {
+                                    "宜臻": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "13": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "14": {
+                                    "宜臻": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "30": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "31": {
+                                    "宜臻": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "16": {
+                                    "昀岱": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "17": {
+                                    "柔汶": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "15": {
+                                    "禹彤": {
+                                                "hours": "15:00 - 17:00",
+                                                "tone": "purple"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "red"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "23": {
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "28": {
+                                    "禹彤": {
+                                                "hours": "15:00 - 19:30",
+                                                "tone": "green"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "29": {
+                                    "禹彤": {
+                                                "hours": "15:00 - 17:00",
+                                                "tone": "purple"
+                                    },
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "20": {
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "21": {
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "22": {
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "27": {
+                                    "瑋琳": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "謝允": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    },
+                                    "羿寧": {
+                                                "hours": "15:00 - 20:00",
+                                                "tone": "black"
+                                    }
+                        },
+                        "24": {
+                                    "羿寧": {
+                                                "hours": "14:30 - 19:30",
+                                                "tone": "gray"
+                                    }
+                        }
+            }
+};
+
+        function getWeekdayIndex(month, day) {
+            const startIdx = startWeekdays[month] || 0;
+            return (startIdx + day - 1) % 7; // 0=一 ... 5=六, 6=日
+        }
+
+        function isSaturday(month, day) {
+            return getWeekdayIndex(month, day) === 5;
+        }
+
+        function isSunday(month, day) {
+            return getWeekdayIndex(month, day) === 6;
+        }
+
+        function getMorningShiftHours(month, day) {
+            return isSaturday(month, day) ? "08:30 - 12:30" : "08:30 - 12:00";
+        }
+
+        function getDefaultEveningMeta(rawHours) {
+            const raw = String(rawHours ?? "").trim();
+            if (raw.includes("14:30")) return { hours: "14:30 - 19:30", tone: "red" };
+            const number = Number.parseFloat(raw);
+            if (number === 2 || number === 2.5) return { hours: "15:00 - 17:00", tone: "purple" };
+            if (number === 4.5) return { hours: "15:00 - 19:30", tone: "green" };
+            return { hours: "15:00 - 20:00", tone: "black" };
+        }
+
+        function ensureShiftPerson(month, day, shiftName, person) {
+            const shift = appData[month]?.shifts?.[day]?.[shiftName];
+            if (!shift) return;
+            const existing = shift.find(item => item.name === person.name);
+            if (existing) Object.assign(existing, person);
+            else shift.push(person);
+        }
+
+        function prepareAppData() {
+            Object.entries(appData).forEach(([monthKey, monthData]) => {
+                const month = Number(monthKey);
+                for (let day = 1; day <= monthData.days; day++) {
+                    const shift = monthData.shifts[day];
+                    if (!shift) continue;
+                    shift["早班"] = shift["早班"] || [];
+                    shift["午班"] = shift["午班"] || [];
+                    shift["晚班"] = shift["晚班"] || [];
+
+                    shift["早班"].forEach(person => {
+                        person.hours = getMorningShiftHours(month, day);
+                        person.tone = "morning";
+                    });
+                    shift["午班"].forEach(person => {
+                        person.hours = "13:30 - 17:00";
+                        person.tone = "mid";
+                    });
+                    shift["晚班"].forEach(person => {
+                        const excelMeta = eveningShiftMeta[month]?.[day]?.[person.name];
+                        Object.assign(person, excelMeta || getDefaultEveningMeta(person.hours));
+                    });
+                }
+            });
+
+            // Excel 藍底：休假日出勤（空白格仍需列入班表）
+            ensureShiftPerson(7, 17, "早班", {
+                name: "宜臻",
+                hours: getMorningShiftHours(7, 17),
+                tone: "morning",
+                holidayWork: true
+            });
+            ensureShiftPerson(7, 18, "早班", {
+                name: "瑋琳",
+                hours: getMorningShiftHours(7, 18),
+                tone: "morning",
+                holidayWork: true
+            });
+
+            // 7/24 羿寧：灰底晚班，並標註大東門支援
+            ensureShiftPerson(7, 24, "晚班", {
+                name: "羿寧",
+                hours: "14:30 - 19:30",
+                tone: "gray",
+                support: "大東門支援"
+            });
+
+            // 同仁統計同步 Excel：藍底出勤時數與休假日出勤標記
+            const julyStats = appData[7]?.stats || [];
+            const yiZhen = julyStats.find(emp => emp.name === "宜臻");
+            if (yiZhen) {
+                yiZhen.totalHours = 121;
+                yiZhen.fullLeaves = (yiZhen.fullLeaves || []).filter(day => day !== 17);
+                yiZhen.holidayWorkDays = [17];
+            }
+            const weiLin = julyStats.find(emp => emp.name === "瑋琳");
+            if (weiLin) {
+                weiLin.totalHours = 182;
+                weiLin.fullLeaves = (weiLin.fullLeaves || []).filter(day => day !== 18);
+                weiLin.holidayWorkDays = [18];
+            }
+        }
+
+        prepareAppData();
+
         const systemDate = new Date();
         const realMonth = systemDate.getMonth() + 1;
         const realDay = systemDate.getDate();
@@ -266,9 +874,7 @@
 
         function getWeekdayString(month, day) {
             const list = ["一", "二", "三", "四", "五", "六", "日"];
-            const startIdx = startWeekdays[month] || 0;
-            const index = (startIdx + day - 1) % 7;
-            return `(${list[index]})`;
+            return `(${list[getWeekdayIndex(month, day)]})`;
         }
 
         function getShiftData(month, day) {
@@ -284,57 +890,127 @@
         }
 
         function updateSmartStatus(day) {
-            const now = new Date();
-            const todayRealMonth = now.getMonth() + 1;
-            const today = now.getDate();
-            const hour = now.getHours();
-            
             const morningTag = document.getElementById("morning-status-tag");
             const midTag = document.getElementById("mid-status-tag");
             const eveningTag = document.getElementById("evening-status-tag");
-            
-            if (currentMonth < todayRealMonth) {
-                setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                return;
-            } else if (currentMonth > todayRealMonth) {
-                setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
+            if (!morningTag || !midTag || !eveningTag) return;
+
+            if (isSunday(currentMonth, day)) {
+                [morningTag, midTag, eveningTag].forEach(tag => setTag(tag, "💤 公休中", "bg-rose-50 text-rose-500"));
                 return;
             }
 
-            if (day < today) {
-                setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-            } else if (day > today) {
-                setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-            } else {
-                // 早班 08:30 - 12:30
-                if (hour < 8) setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                else if (hour >= 8 && hour < 13) setTag(morningTag, "🟢 上班中", "bg-green-50 text-green-600");
-                else setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                
-                // 午班 13:30 - 17:00
-                if (hour < 13) setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                else if (hour >= 13 && hour < 17) setTag(midTag, "🟢 上班中", "bg-green-50 text-green-600");
-                else setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
-                
-                // 🌟 修正：晚班 14:30 / 17:30 到晚上 20:00 (超過 20 點自動判定下班)
-                if (hour < 14) setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
-                else if (hour >= 14 && hour < 20) setTag(eveningTag, "🟢 上班中", "bg-green-50 text-green-600");
-                else setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const selected = new Date(scheduleYear, currentMonth - 1, day).getTime();
+            const shiftData = getShiftData(currentMonth, day);
+
+            if (selected < today) {
+                [morningTag, midTag, eveningTag].forEach(tag => setTag(tag, "⚪ 已下班", "bg-gray-100 text-gray-500"));
+                return;
             }
+            if (selected > today) {
+                [morningTag, midTag, eveningTag].forEach(tag => setTag(tag, "🌙 預備中", "bg-orange-50 text-orange-500"));
+                return;
+            }
+
+            setStatusByShift(morningTag, shiftData["早班"], getMorningShiftHours(currentMonth, day));
+            setStatusByShift(midTag, shiftData["午班"], "13:30 - 17:00");
+            setStatusByShift(eveningTag, shiftData["晚班"]);
+        }
+
+        function setStatusByShift(tag, people, fixedRange = null) {
+            if (!people || people.length === 0) {
+                setTag(tag, "— 無排班", "bg-gray-50 text-gray-400");
+                return;
+            }
+
+            const ranges = fixedRange ? [fixedRange] : people.map(person => person.hours).filter(Boolean);
+            const starts = ranges.map(range => timeToMinutes(range.split("-")[0])).filter(Number.isFinite);
+            const ends = ranges.map(range => timeToMinutes(range.split("-")[1])).filter(Number.isFinite);
+            if (!starts.length || !ends.length) {
+                setTag(tag, "🌙 預備中", "bg-orange-50 text-orange-500");
+                return;
+            }
+
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const start = Math.min(...starts);
+            const end = Math.max(...ends);
+            if (currentMinutes < start) setTag(tag, "🌙 預備中", "bg-orange-50 text-orange-500");
+            else if (currentMinutes < end) setTag(tag, "🟢 上班中", "bg-green-50 text-green-600");
+            else setTag(tag, "⚪ 已下班", "bg-gray-100 text-gray-500");
+        }
+
+        function timeToMinutes(value) {
+            const match = String(value || "").trim().match(/(\d{1,2}):(\d{2})/);
+            return match ? Number(match[1]) * 60 + Number(match[2]) : NaN;
         }
 
         function setTag(el, text, className) {
             el.innerText = text;
             el.className = `text-[10px] font-bold px-2 py-0.5 rounded ${className}`;
         }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function getToneStyle(tone) {
+            const styles = {
+                purple: { dot: "bg-violet-500", badge: "time-pill-purple" },
+                red: { dot: "bg-red-500", badge: "time-pill-red" },
+                black: { dot: "bg-slate-500", badge: "time-pill-late" },
+                green: { dot: "bg-emerald-500", badge: "time-pill-green" },
+                gray: { dot: "bg-gray-400", badge: "time-pill-gray" },
+                morning: { dot: "bg-amber-400", badge: "time-pill-morning" },
+                mid: { dot: "bg-emerald-400", badge: "time-pill-mid" }
+            };
+            return styles[tone] || styles.black;
+        }
+
+        function renderStaffRow(person, shiftType) {
+            const tone = shiftType === "晚班" ? person.tone : (shiftType === "午班" ? "mid" : "morning");
+            const style = getToneStyle(tone);
+            const holidayBadge = person.holidayWork
+                ? `<span class="ml-1.5 inline-flex items-center rounded-full bg-sky-50/80 border border-sky-200 text-sky-600 px-1.5 py-0.5 text-[9px] font-black">休假日出勤</span>`
+                : "";
+            const supportBadge = person.support
+                ? `<span class="ml-1.5 inline-flex items-center gap-1 rounded-full bg-cyan-50/80 border border-cyan-200 text-cyan-700 px-1.5 py-0.5 text-[9px] font-black whitespace-nowrap"><i class="fa-solid fa-location-dot text-[8px]"></i>${escapeHtml(person.support)}</span>`
+                : "";
+
+            return `
+                <div class="flex items-center justify-between gap-3 text-sm min-h-[30px]">
+                    <div class="flex items-center min-w-0 flex-wrap gap-y-1">
+                        <span class="w-2 h-2 rounded-full ${style.dot} mr-2 shrink-0"></span>
+                        <span class="font-bold text-[#2D3748] shrink-0">${escapeHtml(person.name)}</span>
+                        ${holidayBadge}
+                        ${supportBadge}
+                    </div>
+                    <span class="time-pill text-[11px] font-black border rounded-xl px-2.5 py-1.5 whitespace-nowrap ${style.badge}">${escapeHtml(person.hours)}</span>
+                </div>`;
+        }
+
+        function renderDetailPerson(person, shiftType) {
+            const tone = shiftType === "晚班" ? person.tone : (shiftType === "午班" ? "mid" : "morning");
+            const style = getToneStyle(tone);
+            const holidayBadge = person.holidayWork
+                ? `<span class="text-[8px] font-black text-sky-600 bg-sky-50/80 border border-sky-200 rounded px-1 py-0.5">休假出勤</span>`
+                : "";
+            const supportBadge = person.support
+                ? `<span class="text-[8px] font-black text-cyan-700 bg-cyan-50/80 border border-cyan-200 rounded px-1 py-0.5 whitespace-nowrap">${escapeHtml(person.support)}</span>`
+                : "";
+            return `<div class="flex items-center justify-between gap-1.5 py-0.5">
+                <span class="text-xs font-bold text-[#2D3748] flex items-center gap-1 min-w-0 flex-wrap"><span class="w-1.5 h-1.5 rounded-full ${style.dot} shrink-0"></span>${escapeHtml(person.name)} ${holidayBadge} ${supportBadge}</span>
+                <span class="time-pill text-[9px] font-black border rounded-lg px-1.5 py-1 whitespace-nowrap ${style.badge}">${escapeHtml(person.hours)}</span>
+            </div>`;
+        }
+
 
         function initEmployeeFilter() {
             const filterSelect = document.getElementById("employee-filter");
@@ -360,7 +1036,7 @@
             if (calendarSelectedDay > appData[currentMonth].days) calendarSelectedDay = 1;
 
             document.getElementById("calendar-title-month").innerText = `${currentMonth}月 班表日曆`;
-            document.getElementById("summary-title-month").innerText = `${currentMonth}月 同仁出勤統計`;
+            document.getElementById("summary-title-month").innerText = `${currentMonth}月 休假總覽`;
 
             initEmployeeFilter();
             renderDailyPage(currentSelectedDay);
@@ -377,60 +1053,84 @@
         function renderDailyPage(day) {
             currentSelectedDay = day;
             document.getElementById("daily-title-date").innerText = `${currentMonth}月${day}日 ${getWeekdayString(currentMonth, day)}`;
-            updateSmartStatus(day);
-            
+
             const slider = document.getElementById("date-slider");
             slider.innerHTML = "";
             const daysInMonth = appData[currentMonth].days;
 
             for (let i = 1; i <= daysInMonth; i++) {
                 const isSelected = i === day;
+                const sunday = isSunday(currentMonth, i);
                 const div = document.createElement("div");
-                div.className = `flex flex-col items-center justify-center min-w-[55px] h-[55px] rounded-xl border cursor-pointer transition-transform duration-100 active:scale-90 ${isSelected ? 'bg-[#1A1D20] border-[#1A1D20] text-white shadow-md' : 'bg-white border-[#E2E8F0] text-[#2D3748]'}`;
-                
+                const normalStyle = sunday
+                    ? "bg-rose-50 border-rose-100 text-rose-500"
+                    : "bg-white border-[#E2E8F0] text-[#2D3748]";
+                const selectedStyle = sunday
+                    ? "bg-rose-500 border-rose-500 text-white shadow-md"
+                    : "bg-[#1A1D20] border-[#1A1D20] text-white shadow-md";
+                div.className = `flex flex-col items-center justify-center min-w-[55px] h-[55px] rounded-xl border cursor-pointer transition-transform duration-100 active:scale-90 ${isSelected ? selectedStyle : normalStyle}`;
+
                 div.onclick = () => {
                     if (navigator.vibrate) navigator.vibrate(30);
                     renderDailyPage(i);
                 };
 
-                div.innerHTML = `<span class="text-base font-bold ${isSelected ? 'text-[#F5C144]' : ''}">${i}</span><span class="text-[9px] ${isSelected ? 'text-white/70' : 'text-gray-400'} font-bold">${getWeekdayString(currentMonth, i)}</span>`;
+                const dayColor = isSelected ? (sunday ? "text-white" : "text-[#F5C144]") : "";
+                const weekdayColor = isSelected ? "text-white/75" : (sunday ? "text-rose-400" : "text-gray-400");
+                div.innerHTML = `<span class="text-base font-bold ${dayColor}">${i}</span><span class="text-[9px] ${weekdayColor} font-bold">${getWeekdayString(currentMonth, i)}</span>`;
                 slider.appendChild(div);
-                
+
                 if (isSelected && !dayInitiated) {
-                    setTimeout(() => {
-                        div.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                    }, 150);
+                    setTimeout(() => div.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }), 150);
                 }
             }
             dayInitiated = true;
+
+            const holidayCard = document.getElementById("public-holiday-card");
+            const shiftCards = document.getElementById("daily-shift-cards");
+            if (isSunday(currentMonth, day)) {
+                holidayCard.classList.remove("hidden");
+                shiftCards.classList.add("hidden");
+                updateSmartStatus(day);
+                return;
+            }
+            holidayCard.classList.add("hidden");
+            shiftCards.classList.remove("hidden");
+
+            const morningTitle = document.getElementById("morning-shift-title");
+            const midTitle = document.getElementById("mid-shift-title");
+            morningTitle.innerText = `☀️ 早班同仁 (${getMorningShiftHours(currentMonth, day)})`;
+            midTitle.innerText = "🍵 午班同仁 (13:30 - 17:00)";
 
             const morningList = document.getElementById("morning-staff-list");
             const midCard = document.getElementById("mid-shift-card");
             const midList = document.getElementById("mid-staff-list");
             const eveningList = document.getElementById("evening-staff-list");
-            
-            morningList.innerHTML = ""; midList.innerHTML = ""; eveningList.innerHTML = "";
+            morningList.innerHTML = "";
+            midList.innerHTML = "";
+            eveningList.innerHTML = "";
 
             const shiftData = getShiftData(currentMonth, day);
             const morningData = shiftData["早班"];
             const midData = shiftData["午班"];
             const eveningData = shiftData["晚班"];
 
-            if (morningData.length === 0) morningList.innerHTML = `<p class="text-xs text-gray-400 py-1">今日無人排班 / 休假</p>`;
-            else morningData.forEach(p => morningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
+            morningList.innerHTML = morningData.length
+                ? morningData.map(person => renderStaffRow(person, "早班")).join("")
+                : `<p class="text-xs text-gray-400 py-1">今日無早班排班</p>`;
 
             if (midData.length > 0) {
                 midCard.classList.remove("hidden");
-                midData.forEach(p => midList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
+                midList.innerHTML = midData.map(person => renderStaffRow(person, "午班")).join("");
             } else {
                 midCard.classList.add("hidden");
             }
 
-            if (eveningData.length === 0) eveningList.innerHTML = `<p class="text-xs text-gray-400 py-1">今日無人排班 / 休假</p>`;
-            else eveningData.forEach(p => {
-                let hrFormat = p.hours === "14:30 - 19:30" ? `<span class="text-red-500 font-bold">${p.hours}</span>` : `<span class="text-xs text-gray-500 font-medium">${p.hours}</span>`;
-                eveningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span>${hrFormat}</div>`;
-            });
+            eveningList.innerHTML = eveningData.length
+                ? eveningData.map(person => renderStaffRow(person, "晚班")).join("")
+                : `<p class="text-xs text-gray-400 py-1">今日無晚班排班</p>`;
+
+            updateSmartStatus(day);
         }
 
         function renderCalendarPage() {
@@ -438,43 +1138,54 @@
             grid.innerHTML = "";
 
             const startIdx = startWeekdays[currentMonth] || 0;
-            for(let i=0; i<startIdx; i++) {
-                grid.innerHTML += `<div></div>`;
-            }
+            for (let i = 0; i < startIdx; i++) grid.innerHTML += `<div></div>`;
 
             const daysInMonth = appData[currentMonth].days;
             for (let i = 1; i <= daysInMonth; i++) {
                 const shiftData = getShiftData(currentMonth, i);
                 const isSelected = i === calendarSelectedDay;
+                const sunday = isSunday(currentMonth, i);
 
                 let hasEarly = false;
                 let hasMid = false;
                 let hasLate = false;
-
-                if (currentEmployeeFilter === 'all') {
+                if (currentEmployeeFilter === "all") {
                     hasEarly = shiftData["早班"].length > 0;
                     hasMid = shiftData["午班"].length > 0;
                     hasLate = shiftData["晚班"].length > 0;
                 } else {
-                    hasEarly = shiftData["早班"].some(e => e.name === currentEmployeeFilter);
-                    hasMid = shiftData["午班"].some(e => e.name === currentEmployeeFilter);
-                    hasLate = shiftData["晚班"].some(e => e.name === currentEmployeeFilter);
+                    hasEarly = shiftData["早班"].some(employee => employee.name === currentEmployeeFilter);
+                    hasMid = shiftData["午班"].some(employee => employee.name === currentEmployeeFilter);
+                    hasLate = shiftData["晚班"].some(employee => employee.name === currentEmployeeFilter);
                 }
 
-                const isFilteredWorking = (currentEmployeeFilter !== 'all') && (hasEarly || hasMid || hasLate);
-                const styleClass = isSelected ? 'border-[#1A1D20] bg-[#1A1D20] text-white shadow-md' : 
-                                  (isFilteredWorking ? 'border-amber-400 bg-amber-50 text-[#2D3748]' : 'border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200');
+                const isFilteredWorking = currentEmployeeFilter !== "all" && (hasEarly || hasMid || hasLate);
+                let styleClass;
+                if (isSelected) {
+                    styleClass = sunday
+                        ? "border-rose-500 bg-rose-500 text-white shadow-md"
+                        : "border-[#1A1D20] bg-[#1A1D20] text-white shadow-md";
+                } else if (sunday) {
+                    styleClass = "border-rose-100 bg-rose-50 text-rose-500";
+                } else if (isFilteredWorking) {
+                    styleClass = "border-amber-400 bg-amber-50 text-[#2D3748]";
+                } else {
+                    styleClass = "border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200";
+                }
+
+                const indicators = sunday
+                    ? `<span class="text-[8px] font-black mt-0.5 ${isSelected ? "text-white/80" : "text-rose-400"}">公休</span>`
+                    : `<div class="flex gap-0.5 mt-0.5 px-0.5 flex-wrap justify-center w-full">
+                        ${hasEarly ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? "bg-amber-500" : "bg-amber-400"}"></span>` : ""}
+                        ${hasMid ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? "bg-emerald-500" : "bg-emerald-400"}"></span>` : ""}
+                        ${hasLate ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? "bg-indigo-500" : "bg-indigo-400"}"></span>` : ""}
+                    </div>`;
 
                 grid.innerHTML += `
                     <div onclick="selectCalendarDay(${i})" class="cursor-pointer aspect-square flex flex-col items-center justify-center rounded-xl border-2 ${styleClass} transition-transform duration-100 active:scale-90">
                         <span class="text-sm font-bold">${i}</span>
-                        <div class="flex gap-0.5 mt-0.5 px-0.5 flex-wrap justify-center w-full">
-                            ${hasEarly ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? 'bg-amber-500' : 'bg-amber-400'}"></span>` : ''}
-                            ${hasMid ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? 'bg-emerald-500' : 'bg-emerald-400'}"></span>` : ''}
-                            ${hasLate ? `<span class="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${isFilteredWorking ? 'bg-indigo-500' : 'bg-indigo-400'}"></span>` : ''}
-                        </div>
-                    </div>
-                `;
+                        ${indicators}
+                    </div>`;
             }
             updateCalendarDetail(calendarSelectedDay);
         }
@@ -502,44 +1213,57 @@
 
         function updateCalendarDetail(day) {
             const detailContainer = document.getElementById("calendar-detail-card");
+
+            if (isSunday(currentMonth, day)) {
+                detailContainer.innerHTML = `
+                    <div class="bg-gradient-to-br from-rose-50 via-white to-amber-50 rounded-2xl border border-rose-100 p-5 shadow-sm text-center animate-fade-in">
+                        <div class="text-4xl mb-2">🌼</div>
+                        <p class="text-base font-black text-[#1A1D20]">${currentMonth}月${day}日・星期日公休</p>
+                        <p class="text-xs font-bold text-rose-400 mt-1">今天沒有排班，大家好好休息～</p>
+                    </div>`;
+                return;
+            }
+
             const shiftData = getShiftData(currentMonth, day);
-
             let titleText = `${currentMonth}月${day}日 出勤名單`;
-            let earlyHtml = '';
-            let midHtml = '';
-            let lateHtml = '';
-
+            let earlyHtml = "";
+            let midHtml = "";
+            let lateHtml = "";
             const hasMidShiftInDay = shiftData["午班"].length > 0;
 
-            if (currentEmployeeFilter === 'all') {
-                const early = shiftData["早班"].map(e => e.name);
-                const mid = shiftData["午班"].map(e => e.name);
-                const late = shiftData["晚班"].map(e => {
-                    return e.hours === "14:30 - 19:30" ? `<span class="text-red-500">${e.name}</span>` : e.name;
-                });
-                earlyHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${early.length ? early.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
-                midHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${mid.length ? mid.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
-                lateHtml = `<p class="text-sm font-bold text-[#2D3748] leading-relaxed">${late.length ? late.join('<br>') : '<span class="text-gray-400 font-normal">無班</span>'}</p>`;
+            if (currentEmployeeFilter === "all") {
+                earlyHtml = shiftData["早班"].length
+                    ? shiftData["早班"].map(person => renderDetailPerson(person, "早班")).join("")
+                    : `<span class="text-gray-400 text-xs font-normal">無班</span>`;
+                midHtml = shiftData["午班"].length
+                    ? shiftData["午班"].map(person => renderDetailPerson(person, "午班")).join("")
+                    : `<span class="text-gray-400 text-xs font-normal">無班</span>`;
+                lateHtml = shiftData["晚班"].length
+                    ? shiftData["晚班"].map(person => renderDetailPerson(person, "晚班")).join("")
+                    : `<span class="text-gray-400 text-xs font-normal">無班</span>`;
             } else {
-                titleText = `<span class="text-[#1A1D20]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${currentEmployeeFilter} 專屬班表</span>`;
+                titleText = `<span class="text-[#1A1D20]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${escapeHtml(currentEmployeeFilter)} 專屬班表</span>`;
+                const myEarly = shiftData["早班"].find(employee => employee.name === currentEmployeeFilter);
+                const myMid = shiftData["午班"].find(employee => employee.name === currentEmployeeFilter);
+                const myLate = shiftData["晚班"].find(employee => employee.name === currentEmployeeFilter);
+                const otherEarly = shiftData["早班"].filter(employee => employee.name !== currentEmployeeFilter).map(employee => employee.name);
+                const otherMid = shiftData["午班"].filter(employee => employee.name !== currentEmployeeFilter).map(employee => employee.name);
+                const otherLate = shiftData["晚班"].filter(employee => employee.name !== currentEmployeeFilter).map(employee => employee.name);
 
-                const myEarly = shiftData["早班"].find(e => e.name === currentEmployeeFilter);
-                const myMid = shiftData["午班"].find(e => e.name === currentEmployeeFilter);
-                const myLate = shiftData["晚班"].find(e => e.name === currentEmployeeFilter);
-                
-                const otherEarly = shiftData["早班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
-                const otherMid = shiftData["午班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
-                const otherLate = shiftData["晚班"].filter(e => e.name !== currentEmployeeFilter).map(e => e.name);
+                earlyHtml = myEarly
+                    ? renderDetailPerson(myEarly, "早班")
+                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                if (otherEarly.length) earlyHtml += `<div class="mt-2 pt-1.5 border-t border-amber-100"><p class="text-[10px] text-gray-400 font-medium">搭檔：${otherEarly.map(escapeHtml).join("、")}</p></div>`;
 
-                earlyHtml = myEarly ? `<p class="text-sm font-black text-[#2D3748]">${myEarly.hours}</p>` : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
-                if (otherEarly.length > 0) earlyHtml += `<div class="mt-2 pt-1.5 border-t border-amber-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherEarly.join(', ')}</p></div>`;
+                midHtml = myMid
+                    ? renderDetailPerson(myMid, "午班")
+                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                if (otherMid.length) midHtml += `<div class="mt-2 pt-1.5 border-t border-green-100"><p class="text-[10px] text-gray-400 font-medium">搭檔：${otherMid.map(escapeHtml).join("、")}</p></div>`;
 
-                midHtml = myMid ? `<p class="text-sm font-black text-[#2D3748]">${myMid.hours}</p>` : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
-                if (otherMid.length > 0) midHtml += `<div class="mt-2 pt-1.5 border-t border-green-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherMid.join(', ')}</p></div>`;
-
-                let mlFormat = myLate ? (myLate.hours === "14:30 - 19:30" ? `<span class="text-red-500 font-black">${myLate.hours}</span>` : `<span class="text-[#2D3748] font-black">${myLate.hours}</span>`) : `<span class="text-gray-400 font-bold">休假 🏖️</span>`;
-                lateHtml = `<p class="text-sm">${mlFormat}</p>`;
-                if (otherLate.length > 0) lateHtml += `<div class="mt-2 pt-1.5 border-t border-blue-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherLate.join(', ')}</p></div>`;
+                lateHtml = myLate
+                    ? renderDetailPerson(myLate, "晚班")
+                    : `<p class="text-sm font-bold text-gray-400">休假 🏖️</p>`;
+                if (otherLate.length) lateHtml += `<div class="mt-2 pt-1.5 border-t border-blue-100"><p class="text-[10px] text-gray-400 font-medium">搭檔：${otherLate.map(escapeHtml).join("、")}</p></div>`;
             }
 
             const containerClass = hasMidShiftInDay ? "flex flex-col gap-3" : "flex gap-3";
@@ -547,31 +1271,28 @@
                 <div class="flex-1 bg-[#F0FFF4] rounded-xl p-3 border border-green-100 flex flex-col">
                     <div class="flex items-center gap-1.5 mb-2">
                         <i class="fa-solid fa-mug-hot text-emerald-500 text-sm"></i>
-                        <span class="text-xs font-bold text-gray-500">午班 (周教授)</span>
+                        <span class="text-xs font-bold text-gray-500">午班 13:30 - 17:00</span>
                     </div>
                     <div class="flex-1">${midHtml}</div>
-                </div>
-            ` : '';
+                </div>` : "";
 
             detailContainer.innerHTML = `
                 <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in">
-                    <div class="flex justify-between items-center mb-3">
+                    <div class="flex justify-between items-center mb-3 gap-2">
                         <span class="text-base font-black text-[#1A1D20]">${titleText}</span>
-                        <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${getWeekdayString(currentMonth, day)}</span>
+                        <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded shrink-0">${getWeekdayString(currentMonth, day)}</span>
                     </div>
                     <hr class="border-[#EDF2F7] mb-3">
                     <div class="${containerClass}">
-                        <div class="flex-1 bg-[#FFFDF5] rounded-xl p-3 border border-amber-100 flex flex-col">
+                        <div class="flex-1 bg-[#FFFDF5] rounded-xl p-3 border border-amber-100 flex flex-col min-w-0">
                             <div class="flex items-center gap-1.5 mb-2">
                                 <i class="fa-solid fa-sun text-amber-500 text-sm"></i>
-                                <span class="text-xs font-bold text-gray-500">早班</span>
+                                <span class="text-[11px] font-bold text-gray-500">早班 ${getMorningShiftHours(currentMonth, day)}</span>
                             </div>
                             <div class="flex-1">${earlyHtml}</div>
                         </div>
-                        
                         ${midCardHtml}
-
-                        <div class="flex-1 bg-[#F0F7FF] rounded-xl p-3 border border-blue-100 flex flex-col">
+                        <div class="flex-1 bg-[#F0F7FF] rounded-xl p-3 border border-blue-100 flex flex-col min-w-0">
                             <div class="flex items-center gap-1.5 mb-2">
                                 <i class="fa-solid fa-moon text-indigo-500 text-sm"></i>
                                 <span class="text-xs font-bold text-gray-500">晚班</span>
@@ -579,8 +1300,7 @@
                             <div class="flex-1">${lateHtml}</div>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
         function renderSummaryPage() {
@@ -595,6 +1315,7 @@
 
             statsData.forEach(emp => {
                 let chipsHtml = "";
+                if (emp.holidayWorkDays && emp.holidayWorkDays.length > 0) chipsHtml += makeChips("休假日出勤", emp.holidayWorkDays, "bg-sky-50 border-sky-200 text-sky-600");
                 chipsHtml += makeChips("休假日", emp.fullLeaves, "bg-gray-50 border-gray-200 text-gray-600");
                 if(emp.morningLeaves.length > 0) chipsHtml += makeChips("早班休", emp.morningLeaves, "bg-amber-50 border-amber-100 text-amber-600");
                 if(emp.midLeaves.length > 0) chipsHtml += makeChips("午班休", emp.midLeaves, "bg-green-50 border-green-100 text-green-600");
@@ -631,49 +1352,105 @@
             document.getElementById("page-calendar").classList.add("hidden");
             document.getElementById("page-summary").classList.add("hidden");
             
-            document.getElementById("nav-daily").className = "flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100";
-            document.getElementById("nav-calendar").className = "flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100";
-            document.getElementById("nav-summary").className = "flex flex-col items-center gap-1 text-gray-400 active:scale-90 transition-transform duration-100";
+            ["nav-calendar", "nav-daily", "nav-summary"].forEach(id => {
+                document.getElementById(id).classList.remove("active");
+            });
 
             if (page === 'daily') {
                 document.getElementById("page-daily").classList.remove("hidden");
-                document.getElementById("nav-daily").className = "flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100";
+                document.getElementById("nav-daily").classList.add("active");
                 dayInitiated = false;
                 renderDailyPage(currentSelectedDay);
             } else if (page === 'calendar') {
                 document.getElementById("page-calendar").classList.remove("hidden");
-                document.getElementById("nav-calendar").className = "flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100";
+                document.getElementById("nav-calendar").classList.add("active");
                 renderCalendarPage();
             } else if (page === 'summary') {
                 document.getElementById("page-summary").classList.remove("hidden");
-                document.getElementById("nav-summary").className = "flex flex-col items-center gap-1 text-[#1A1D20] active:scale-90 transition-transform duration-100";
+                document.getElementById("nav-summary").classList.add("active");
                 renderSummaryPage();
             }
         }
 
-        // 🌟 串接即時氣象功能 (使用開源 Open-Meteo API)
-        async function fetchWeather() {
+        // ===== 即時氣象：裝置定位 + 所在地區 =====
+        const defaultWeatherLocation = { latitude: 25.03, longitude: 121.30, label: "桃園" };
+        let activeWeatherLocation = { ...defaultWeatherLocation };
+
+        function getUserPosition() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error("此裝置不支援定位"));
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: false,
+                    timeout: 8000,
+                    maximumAge: 30 * 60 * 1000
+                });
+            });
+        }
+
+        async function reverseGeocode(latitude, longitude) {
             try {
-                const widget = document.getElementById("weather-widget");
-                // 預設抓取台灣氣象資料 (大約為桃園一帶座標)
-                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=25.03&longitude=121.30&current_weather=true");
-                const data = await res.json();
-                
-                const temp = Math.round(data.current_weather.temperature);
-                const code = data.current_weather.weathercode;
-                
+                const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=zh`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("地區查詢失敗");
+                const data = await response.json();
+                const label = data.locality || data.city || data.principalSubdivision || "目前位置";
+                return String(label).replace("臺灣省", "").replace("台灣省", "").trim() || "目前位置";
+            } catch (error) {
+                return "目前位置";
+            }
+        }
+
+        async function initWeather() {
+            const widget = document.getElementById("weather-widget");
+            widget.innerHTML = `<i class="fa-solid fa-location-crosshairs fa-spin text-sky-500"></i><span class="text-xs truncate">定位中</span>`;
+            try {
+                const position = await getUserPosition();
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                activeWeatherLocation = {
+                    latitude,
+                    longitude,
+                    label: await reverseGeocode(latitude, longitude)
+                };
+            } catch (error) {
+                activeWeatherLocation = { ...defaultWeatherLocation };
+            }
+            await fetchWeather();
+        }
+
+        async function fetchWeather() {
+            const widget = document.getElementById("weather-widget");
+            try {
+                const { latitude, longitude, label } = activeWeatherLocation;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("氣象讀取失敗");
+                const data = await response.json();
+                const temp = Math.round(data.current.temperature_2m);
+                const code = data.current.weather_code;
+
                 let icon = "☁️";
                 if (code === 0) icon = "☀️";
                 else if (code >= 1 && code <= 3) icon = "⛅";
                 else if (code >= 45 && code <= 48) icon = "🌫️";
                 else if (code >= 51 && code <= 67) icon = "🌧️";
                 else if (code >= 71 && code <= 77) icon = "❄️";
-                else if (code >= 80 && code <= 82) icon = "🌧️";
+                else if (code >= 80 && code <= 82) icon = "🌦️";
                 else if (code >= 95) icon = "⛈️";
 
-                widget.innerHTML = `<span>${icon}</span><span>${temp}°C</span>`;
-            } catch (e) {
-                document.getElementById("weather-widget").innerHTML = `<span>☁️</span><span>--°C</span>`;
+                widget.innerHTML = `
+                    <span class="text-base leading-none">${icon}</span>
+                    <span class="text-sm font-black text-[#1A1D20] whitespace-nowrap">${temp}°C</span>
+                    <span class="flex items-center gap-1 text-[10px] text-gray-500 min-w-0">
+                        <i class="fa-solid fa-location-dot text-rose-400 shrink-0"></i>
+                        <span class="truncate">${escapeHtml(label)}</span>
+                    </span>`;
+                widget.title = `${label}｜${temp}°C`;
+            } catch (error) {
+                widget.innerHTML = `<span class="text-base">☁️</span><span class="text-sm font-black">--°C</span><span class="text-[10px] text-gray-400 truncate">${escapeHtml(activeWeatherLocation.label)}</span>`;
             }
         }
 
@@ -683,14 +1460,14 @@
                 globalMonthSelect.value = currentMonth;
             }
             document.getElementById("calendar-title-month").innerText = `${currentMonth}月 班表日曆`;
-            document.getElementById("summary-title-month").innerText = `${currentMonth}月 同仁出勤統計`;
+            document.getElementById("summary-title-month").innerText = `${currentMonth}月 休假總覽`;
 
             initEmployeeFilter();
             renderDailyPage(currentSelectedDay);
 
-            // 啟動氣象服務
-            fetchWeather();
-            // 每 30 分鐘更新一次氣象
+            // 啟動定位與氣象服務
+            initWeather();
+            // 每 30 分鐘更新一次氣象（不重複要求定位權限）
             setInterval(fetchWeather, 30 * 60 * 1000);
 
             // 🌟 啟動心跳神經：每 1 分鐘自動檢查是否到了下班時間
