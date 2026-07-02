@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 🌟 強制防快取設定，確保每次打開都是最新班表 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>大北門讚 智能排班App</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -33,7 +39,7 @@
                 <h1 class="text-2xl font-black text-[#1A1D20]">大北門讚 ⚡</h1>
                 <div class="relative active:scale-95 transition-transform duration-100">
                     <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#1A1D20] text-[#F5C144] border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
-                        <option value="7" selected>7月 班表</option>
+                        <option value="7">7月 班表</option>
                         <option value="6">6月 班表</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[#F5C144] text-xs pointer-events-none"></i>
@@ -54,7 +60,6 @@
             
             <div class="flex flex-col gap-4 flex-1 overflow-y-auto no-scrollbar">
                 
-                <!-- 早班區塊 -->
                 <div class="bg-[#FFFDF5] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-sm font-bold text-[#1A1D20]">☀️ 早班同仁 (08:30)</span>
@@ -64,7 +69,6 @@
                     <div id="morning-staff-list" class="flex flex-col gap-2"></div>
                 </div>
 
-                <!-- 🍵 午班區塊 (智慧顯示：有排班才會出現) -->
                 <div id="mid-shift-card" class="bg-[#F0FFF4] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm hidden">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-sm font-bold text-[#1A1D20]">🍵 午班同仁 (13:30)</span>
@@ -74,7 +78,6 @@
                     <div id="mid-staff-list" class="flex flex-col gap-2"></div>
                 </div>
                 
-                <!-- 晚班區塊 -->
                 <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-sm font-bold text-[#1A1D20]">🌙 晚班同仁 (14:30/17:30)</span>
@@ -90,7 +93,7 @@
         <div id="page-calendar" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <p class="text-lg font-bold text-[#1A1D20]" id="calendar-title-month">7月 班表日曆</p>
+                    <p class="text-lg font-bold text-[#1A1D20]" id="calendar-title-month">-月 班表日曆</p>
                     <p class="text-[10px] text-gray-400 mt-0.5">點擊日期查看當日名單</p>
                 </div>
                 <div class="relative active:scale-95 transition-transform duration-100">
@@ -120,7 +123,7 @@
         <!-- ================= 頁面 3：同仁統計 ================= -->
         <div id="page-summary" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="mb-4">
-                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">7月 同仁出勤統計</p>
+                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">-月 同仁出勤統計</p>
             </div>
             <div id="employee-summary-list" class="flex flex-col gap-3 flex-1 overflow-y-auto no-scrollbar"></div>
         </div>
@@ -144,9 +147,8 @@
     </div>
 
     <script>
-        const startWeekdays = { 6: 0, 7: 2 }; // 6月1日是週一, 7月1日是週三
+        const startWeekdays = { 6: 0, 7: 2 }; 
 
-        // 🌟 自動匯入的智慧資料庫
         const appData = {
             6: {
                 days: 30,
@@ -242,8 +244,20 @@
             }
         };
 
-        let currentMonth = 7;
-        let currentSelectedDay = new Date().getDate(); 
+        // ====== 🌟 核心升級：自動抓取手機時間系統 ======
+        const systemDate = new Date();
+        const realMonth = systemDate.getMonth() + 1;
+        const realDay = systemDate.getDate();
+
+        // 智慧判斷：如果現在是 7 月，就鎖定 7 月；如果超前到 8 月但系統還沒排，就顯示最新的月份
+        let currentMonth = appData[realMonth] ? realMonth : Math.max(...Object.keys(appData).map(Number));
+        let currentSelectedDay = realDay;
+
+        // 防呆：如果今天是 31 號，但切換到的月份只有 30 天，自動退回最後一天
+        if (currentSelectedDay > appData[currentMonth].days) {
+            currentSelectedDay = appData[currentMonth].days;
+        }
+
         let calendarSelectedDay = currentSelectedDay;
         let currentEmployeeFilter = 'all';
         let dayInitiated = false;
@@ -255,7 +269,6 @@
             return `(${list[index]})`;
         }
 
-        // 🌟 強化版資料讀取 (支援午班)
         function getShiftData(month, day) {
             if (appData[month] && appData[month].shifts && appData[month].shifts[day]) {
                 const sd = appData[month].shifts[day];
@@ -270,7 +283,7 @@
 
         function updateSmartStatus(day) {
             const now = new Date();
-            const realMonth = now.getMonth() + 1;
+            const todayRealMonth = now.getMonth() + 1;
             const today = now.getDate();
             const hour = now.getHours();
             
@@ -278,12 +291,12 @@
             const midTag = document.getElementById("mid-status-tag");
             const eveningTag = document.getElementById("evening-status-tag");
             
-            if (currentMonth < realMonth) {
+            if (currentMonth < todayRealMonth) {
                 setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 return;
-            } else if (currentMonth > realMonth) {
+            } else if (currentMonth > todayRealMonth) {
                 setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
@@ -299,17 +312,14 @@
                 setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
             } else {
-                // 早班 08:30 - 12:30
                 if (hour < 8) setTag(morningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 else if (hour >= 8 && hour < 13) setTag(morningTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(morningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 
-                // 午班 13:30 - 17:00
                 if (hour < 13) setTag(midTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 else if (hour >= 13 && hour < 17) setTag(midTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(midTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
                 
-                // 晚班 (廣義) 14:30 / 17:30 - 21:00
                 if (hour < 14) setTag(eveningTag, "🌙 預備中", "bg-orange-50 text-orange-500");
                 else if (hour >= 14 && hour <= 21) setTag(eveningTag, "🟢 上班中", "bg-green-50 text-green-600");
                 else setTag(eveningTag, "⚪ 已下班", "bg-gray-100 text-gray-500");
@@ -325,7 +335,7 @@
             const filterSelect = document.getElementById("employee-filter");
             filterSelect.innerHTML = '<option value="all">所有人員</option>';
             const names = new Set();
-            if (appData[currentMonth].stats) {
+            if (appData[currentMonth] && appData[currentMonth].stats) {
                 appData[currentMonth].stats.forEach(emp => names.add(emp.name));
             }
             names.forEach(name => {
@@ -380,8 +390,12 @@
 
                 div.innerHTML = `<span class="text-base font-bold ${isSelected ? 'text-[#F5C144]' : ''}">${i}</span><span class="text-[9px] ${isSelected ? 'text-white/70' : 'text-gray-400'} font-bold">${getWeekdayString(currentMonth, i)}</span>`;
                 slider.appendChild(div);
+                
+                // 🌟 新增：一打開網頁，滑桿自動捲動到「今天日期」的置中位置
                 if (isSelected && !dayInitiated) {
-                    setTimeout(() => div.scrollIntoView({ behavior: 'smooth', inline: 'center' }), 100);
+                    setTimeout(() => {
+                        div.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    }, 150);
                 }
             }
             dayInitiated = true;
@@ -401,7 +415,6 @@
             if (morningData.length === 0) morningList.innerHTML = `<p class="text-xs text-gray-400 py-1">今日無人排班 / 休假</p>`;
             else morningData.forEach(p => morningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
 
-            // 🌟 智慧判斷：這天有午班，才把午班區塊顯示出來！
             if (midData.length > 0) {
                 midCard.classList.remove("hidden");
                 midData.forEach(p => midList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span><span class="text-xs text-gray-500 font-medium">${p.hours}</span></div>`);
@@ -411,7 +424,6 @@
 
             if (eveningData.length === 0) eveningList.innerHTML = `<p class="text-xs text-gray-400 py-1">今日無人排班 / 休假</p>`;
             else eveningData.forEach(p => {
-                // 如果是提早班的紅字，給他特別加粗顯示！
                 let hrFormat = p.hours === "14:30 - 19:30" ? `<span class="text-red-500 font-bold">${p.hours}</span>` : `<span class="text-xs text-gray-500 font-medium">${p.hours}</span>`;
                 eveningList.innerHTML += `<div class="flex justify-between text-sm"><span class="font-bold text-[#2D3748]">${p.name}</span>${hrFormat}</div>`;
             });
@@ -449,7 +461,6 @@
                 const styleClass = isSelected ? 'border-[#1A1D20] bg-[#1A1D20] text-white shadow-md' : 
                                   (isFilteredWorking ? 'border-amber-400 bg-amber-50 text-[#2D3748]' : 'border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200');
 
-                // 🌟 新增了綠色的「午班小圓點」
                 grid.innerHTML += `
                     <div onclick="selectCalendarDay(${i})" class="cursor-pointer aspect-square flex flex-col items-center justify-center rounded-xl border-2 ${styleClass} transition-transform duration-100 active:scale-90">
                         <span class="text-sm font-bold">${i}</span>
@@ -527,7 +538,6 @@
                 if (otherLate.length > 0) lateHtml += `<div class="mt-2 pt-1.5 border-t border-blue-100"><p class="text-[10px] text-gray-400 font-medium">搭檔: ${otherLate.join(', ')}</p></div>`;
             }
 
-            // 🌟 智慧排版：如果當天有午班，卡片改為垂直排列以容納所有資訊；沒有的話就維持水平並排。
             const containerClass = hasMidShiftInDay ? "flex flex-col gap-3" : "flex gap-3";
             const midCardHtml = hasMidShiftInDay ? `
                 <div class="flex-1 bg-[#F0FFF4] rounded-xl p-3 border border-green-100 flex flex-col">
@@ -581,7 +591,6 @@
 
             statsData.forEach(emp => {
                 let chipsHtml = "";
-                // 7月份因為直接程式抓取，統一顯示全日休假天數
                 chipsHtml += makeChips("休假日", emp.fullLeaves, "bg-gray-50 border-gray-200 text-gray-600");
                 if(emp.morningLeaves.length > 0) chipsHtml += makeChips("早班休", emp.morningLeaves, "bg-amber-50 border-amber-100 text-amber-600");
                 if(emp.midLeaves.length > 0) chipsHtml += makeChips("午班休", emp.midLeaves, "bg-green-50 border-green-100 text-green-600");
@@ -638,8 +647,19 @@
             }
         }
 
-        initEmployeeFilter();
-        renderDailyPage(currentSelectedDay);
+        // 🌟 啟動時：把下拉選單強制同步為「自動判定的當前月份」
+        document.addEventListener('DOMContentLoaded', () => {
+            const globalMonthSelect = document.getElementById("global-month");
+            if (globalMonthSelect) {
+                globalMonthSelect.value = currentMonth;
+            }
+            document.getElementById("calendar-title-month").innerText = `${currentMonth}月 班表日曆`;
+            document.getElementById("summary-title-month").innerText = `${currentMonth}月 同仁出勤統計`;
+
+            initEmployeeFilter();
+            renderDailyPage(currentSelectedDay);
+        });
+
     </script>
 </body>
 </html>
