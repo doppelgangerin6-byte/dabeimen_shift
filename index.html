@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<!-- DABEIMEN_SHIFT_BUILD: 2026-07-02-v16.1 -->
+<html lang="zh-TW" data-app-version="2026-07-02-v16.1">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="application-version" content="2026-07-02-v16.1">
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <title>大北門讚 Shift Pro</title>
+    <meta name="theme-color" content="#F4F6F8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -24,6 +27,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         select { -webkit-tap-highlight-color: transparent; }
+        button { font: inherit; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
 
@@ -265,15 +269,15 @@
         <!-- ================= 底部導覽列 ================= -->
         <nav class="bottom-nav-shell" aria-label="主要功能">
             <div class="bottom-nav-inner">
-                <button onclick="switchPage('calendar')" id="nav-calendar" class="nav-button nav-calendar" aria-label="月曆總覽">
+                <button type="button" onclick="switchPage('calendar')" id="nav-calendar" class="nav-button nav-calendar" aria-label="月曆總覽">
                     <span class="nav-icon-wrap"><i class="fa-solid fa-calendar-days"></i></span>
                     <span class="nav-label">月曆總覽</span>
                 </button>
-                <button onclick="switchPage('daily')" id="nav-daily" class="nav-button nav-daily active" aria-label="單日排班">
+                <button type="button" onclick="switchPage('daily')" id="nav-daily" class="nav-button nav-daily active" aria-label="單日排班" aria-current="page">
                     <span class="nav-icon-wrap"><i class="fa-solid fa-calendar-check"></i></span>
                     <span class="nav-label">單日排班</span>
                 </button>
-                <button onclick="switchPage('summary')" id="nav-summary" class="nav-button nav-leave" aria-label="休假總覽">
+                <button type="button" onclick="switchPage('summary')" id="nav-summary" class="nav-button nav-leave" aria-label="休假總覽">
                     <span class="nav-icon-wrap"><i class="fa-solid fa-umbrella-beach"></i></span>
                     <span class="nav-label">休假總覽</span>
                 </button>
@@ -283,6 +287,9 @@
     </div>
 
     <script>
+        const APP_VERSION = "2026-07-02-v16.1";
+        window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
+
         const startWeekdays = { 6: 0, 7: 2 }; 
 
         const appData = {
@@ -1336,10 +1343,15 @@
 
         function makeChips(title, days, colorClass) {
             if (!days || days.length === 0) return "";
-            const items = days.map(d => `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold border ${colorClass}">${d}號</span>`).join('');
+            const items = days.map(day => `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold border ${colorClass}">${day}號</span>`).join("");
+            const textClass = colorClass.split(/\s+/).find(className => className.startsWith("text-")) || "text-gray-500";
+            const dotClass = textClass.replace(/^text-/, "bg-");
             return `
                 <div>
-                    <div class="text-[11px] font-bold text-gray-400 mb-1.5 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full ${colorClass.split(' ')[2]}"></span>${title} (共 ${days.length} 天)</div>
+                    <div class="text-[11px] font-bold text-gray-400 mb-1.5 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+                        ${escapeHtml(title)} (共 ${days.length} 天)
+                    </div>
                     <div class="flex flex-wrap gap-1.5">${items}</div>
                 </div>
             `;
@@ -1353,21 +1365,26 @@
             document.getElementById("page-summary").classList.add("hidden");
             
             ["nav-calendar", "nav-daily", "nav-summary"].forEach(id => {
-                document.getElementById(id).classList.remove("active");
+                const navButton = document.getElementById(id);
+                navButton.classList.remove("active");
+                navButton.removeAttribute("aria-current");
             });
 
             if (page === 'daily') {
                 document.getElementById("page-daily").classList.remove("hidden");
                 document.getElementById("nav-daily").classList.add("active");
+                document.getElementById("nav-daily").setAttribute("aria-current", "page");
                 dayInitiated = false;
                 renderDailyPage(currentSelectedDay);
             } else if (page === 'calendar') {
                 document.getElementById("page-calendar").classList.remove("hidden");
                 document.getElementById("nav-calendar").classList.add("active");
+                document.getElementById("nav-calendar").setAttribute("aria-current", "page");
                 renderCalendarPage();
             } else if (page === 'summary') {
                 document.getElementById("page-summary").classList.remove("hidden");
                 document.getElementById("nav-summary").classList.add("active");
+                document.getElementById("nav-summary").setAttribute("aria-current", "page");
                 renderSummaryPage();
             }
         }
@@ -1455,6 +1472,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            console.info(`[大北門讚] APP_VERSION: ${APP_VERSION}`);
             const globalMonthSelect = document.getElementById("global-month");
             if (globalMonthSelect) {
                 globalMonthSelect.value = currentMonth;
