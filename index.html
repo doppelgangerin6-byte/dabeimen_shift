@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<!-- DABEIMEN_SHIFT_BUILD: 2026-07-02-v16.1 -->
-<html lang="zh-TW" data-app-version="2026-07-02-v16.1">
+<!-- DABEIMEN_SHIFT_BUILD: 2026-07-04-v17.0 -->
+<html lang="zh-TW" data-app-version="2026-07-04-v17.0">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="application-version" content="2026-07-02-v16.1">
+    <meta name="application-version" content="2026-07-04-v17.0">
+    <meta name="application-name" content="大北門讚班表APP">
+    <meta name="apple-mobile-web-app-title" content="大北門排班戰情室">
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>gngclinic - Shift Pro</title>
+    <title>大北門排班戰情室｜智慧班表</title>
     <meta name="theme-color" content="#F4F6F8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -172,6 +174,17 @@
                     <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[#F5C144] text-xs pointer-events-none"></i>
                 </div>
             </div>
+
+            <!-- 今日上班穿搭／通勤提醒 -->
+            <div id="weather-advice" class="mt-3 flex items-start gap-2.5 rounded-2xl border border-sky-100 bg-gradient-to-r from-white via-sky-50/80 to-indigo-50/70 px-3.5 py-3 shadow-sm transition-all duration-300" aria-live="polite">
+                <div id="weather-advice-icon" class="w-8 h-8 rounded-xl bg-white border border-sky-100 shadow-sm flex items-center justify-center text-sky-500 shrink-0">
+                    <i class="fa-solid fa-shirt"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[10px] font-black tracking-[0.12em] text-sky-500">今日上班穿搭</p>
+                    <p id="weather-advice-text" class="mt-0.5 text-xs font-bold leading-relaxed text-[#334155]">正在依照所在地天氣整理通勤建議…</p>
+                </div>
+            </div>
         </div>
 
         <!-- ================= 頁面 1：單日排班 ================= -->
@@ -268,7 +281,7 @@
         
         <!-- ================= Footer 版權 ================= -->
         <div class="text-[10px] text-gray-400 text-center py-2 absolute bottom-20 w-full">
-            Built by Tigershyness | gngclinic
+            Built by Tigershyness | 大北門排班戰情室
         </div>
 
         <!-- ================= 底部導覽列 ================= -->
@@ -292,7 +305,7 @@
     </div>
 
     <script>
-        const APP_VERSION = "2026-07-02-v16.1";
+        const APP_VERSION = "2026-07-04-v17.0";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
         const startWeekdays = { 6: 0, 7: 2 }; 
@@ -1335,9 +1348,8 @@
 
                 container.innerHTML += `
                     <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm">
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center mb-3">
                             <span class="text-base font-black text-[#1A1D20]">${emp.name}</span>
-                            <span class="bg-[#1A1D20] text-[#F5C144] text-xs font-black px-2.5 py-1 rounded-lg">${emp.totalHours} 小時</span>
                         </div>
                         <hr class="border-[#EDF2F7] mb-3">
                         <div class="flex flex-col gap-3">${chipsHtml}</div>
@@ -1425,6 +1437,114 @@
             }
         }
 
+        function setWeatherAdvice(message, iconClass = "fa-shirt", tone = "sky") {
+            const advice = document.getElementById("weather-advice");
+            const icon = document.getElementById("weather-advice-icon");
+            const text = document.getElementById("weather-advice-text");
+            if (!advice || !icon || !text) return;
+
+            const toneMap = {
+                sky: {
+                    box: "border-sky-100 from-white via-sky-50/80 to-indigo-50/70",
+                    icon: "border-sky-100 text-sky-500"
+                },
+                amber: {
+                    box: "border-amber-100 from-white via-amber-50/80 to-orange-50/70",
+                    icon: "border-amber-100 text-amber-500"
+                },
+                rose: {
+                    box: "border-rose-100 from-white via-rose-50/80 to-orange-50/70",
+                    icon: "border-rose-100 text-rose-500"
+                },
+                slate: {
+                    box: "border-slate-200 from-white via-slate-50/90 to-gray-100/80",
+                    icon: "border-slate-200 text-slate-500"
+                }
+            };
+
+            const allBoxClasses = Object.values(toneMap).flatMap(item => item.box.split(" "));
+            const allIconClasses = Object.values(toneMap).flatMap(item => item.icon.split(" "));
+            advice.classList.remove(...allBoxClasses);
+            icon.classList.remove(...allIconClasses);
+
+            const selected = toneMap[tone] || toneMap.sky;
+            advice.classList.add(...selected.box.split(" "));
+            icon.classList.add(...selected.icon.split(" "));
+            icon.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            text.textContent = message;
+        }
+
+        function buildWeatherAdvice({ code, temp, apparentTemp, precipitation, rain, windSpeed, rainProbability, dailyRain }) {
+            const isThunderstorm = code >= 95;
+            const isFog = code >= 45 && code <= 48;
+            const isRain = (code >= 51 && code <= 67) || (code >= 80 && code <= 82);
+            const isHeavyRain = [65, 67, 82].includes(code) || precipitation >= 7.5 || rain >= 7.5 || dailyRain >= 30;
+            const isLikelyRain = isRain || rainProbability >= 60;
+            const isWindy = windSpeed >= 30;
+
+            if (isThunderstorm) {
+                return {
+                    message: "今天有雷雨風險：建議防水外套＋防滑包鞋，雨具帶好；通勤別搶快，騎車請特別小心。",
+                    iconClass: "fa-cloud-bolt",
+                    tone: "rose"
+                };
+            }
+            if (isHeavyRain) {
+                return {
+                    message: "今天雨勢偏大：穿防水外套、快乾長褲與防滑鞋，雨傘抓牢；積水路段慢慢走。",
+                    iconClass: "fa-cloud-showers-heavy",
+                    tone: "rose"
+                };
+            }
+            if (isLikelyRain) {
+                return {
+                    message: "今天可能下雨：輕薄防水外套＋防滑鞋最穩，折傘記得帶，襪子也可以多備一雙。",
+                    iconClass: "fa-umbrella",
+                    tone: "sky"
+                };
+            }
+            if (isFog) {
+                return {
+                    message: "今天能見度較低：建議穿亮色上衣或外套，騎車開燈、放慢速度，安全感直接拉滿。",
+                    iconClass: "fa-smog",
+                    tone: "slate"
+                };
+            }
+            if (isWindy) {
+                return {
+                    message: "今天風勢較強：外套選貼身防風款，帽子先收好；騎車與過路口要留意側風。",
+                    iconClass: "fa-wind",
+                    tone: "slate"
+                };
+            }
+            if (apparentTemp >= 33 || temp >= 32) {
+                return {
+                    message: "今天體感炎熱：穿透氣短袖、輕薄長褲，記得補水與防曬；冷氣房可備薄外套。",
+                    iconClass: "fa-temperature-high",
+                    tone: "amber"
+                };
+            }
+            if (apparentTemp <= 18 || temp <= 18) {
+                return {
+                    message: "今天偏涼：建議薄外套＋長褲，早晚通勤注意保暖，洋蔥式穿法最不容易翻車。",
+                    iconClass: "fa-vest",
+                    tone: "slate"
+                };
+            }
+            if (apparentTemp <= 24 || temp <= 24) {
+                return {
+                    message: "今天舒適偏涼：短袖搭薄外套剛剛好，室內冷氣強的同事記得多帶一件。",
+                    iconClass: "fa-shirt",
+                    tone: "sky"
+                };
+            }
+            return {
+                message: "今天適合輕便上班裝：透氣上衣＋舒適鞋款，通勤補水、防曬，就能漂亮開工。",
+                iconClass: "fa-person-walking",
+                tone: "sky"
+            };
+        }
+
         async function initWeather() {
             const widget = document.getElementById("weather-widget");
             widget.innerHTML = `<i class="fa-solid fa-location-crosshairs fa-spin text-sky-500"></i><span class="text-xs truncate">定位中</span>`;
@@ -1447,12 +1567,20 @@
             const widget = document.getElementById("weather-widget");
             try {
                 const { latitude, longitude, label } = activeWeatherLocation;
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
+                const currentFields = "temperature_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m";
+                const dailyFields = "weather_code,precipitation_probability_max,precipitation_sum";
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=${currentFields}&daily=${dailyFields}&forecast_days=1&timezone=auto`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("氣象讀取失敗");
                 const data = await response.json();
                 const temp = Math.round(data.current.temperature_2m);
-                const code = data.current.weather_code;
+                const apparentTemp = Math.round(data.current.apparent_temperature ?? data.current.temperature_2m);
+                const code = Number(data.current.weather_code ?? data.daily?.weather_code?.[0] ?? 3);
+                const precipitation = Number(data.current.precipitation ?? 0);
+                const rain = Number(data.current.rain ?? 0);
+                const windSpeed = Number(data.current.wind_speed_10m ?? 0);
+                const rainProbability = Number(data.daily?.precipitation_probability_max?.[0] ?? 0);
+                const dailyRain = Number(data.daily?.precipitation_sum?.[0] ?? 0);
 
                 let icon = "☁️";
                 if (code === 0) icon = "☀️";
@@ -1470,14 +1598,27 @@
                         <i class="fa-solid fa-location-dot text-rose-400 shrink-0"></i>
                         <span class="truncate">${escapeHtml(label)}</span>
                     </span>`;
-                widget.title = `${label}｜${temp}°C`;
+                widget.title = `${label}｜${temp}°C｜體感 ${apparentTemp}°C｜降雨機率 ${rainProbability}%`;
+
+                const advice = buildWeatherAdvice({
+                    code,
+                    temp,
+                    apparentTemp,
+                    precipitation,
+                    rain,
+                    windSpeed,
+                    rainProbability,
+                    dailyRain
+                });
+                setWeatherAdvice(advice.message, advice.iconClass, advice.tone);
             } catch (error) {
                 widget.innerHTML = `<span class="text-base">☁️</span><span class="text-sm font-black">--°C</span><span class="text-[10px] text-gray-400 truncate">${escapeHtml(activeWeatherLocation.label)}</span>`;
+                setWeatherAdvice("暫時讀不到即時天氣，先採洋蔥式穿法並隨身帶傘，通勤最保險。", "fa-layer-group", "slate");
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.info(`[大北門讚] APP_VERSION: ${APP_VERSION}`);
+            console.info(`[大北門排班戰情室] APP_VERSION: ${APP_VERSION}`);
             const globalMonthSelect = document.getElementById("global-month");
             if (globalMonthSelect) {
                 globalMonthSelect.value = currentMonth;
