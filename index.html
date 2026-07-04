@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- DABEIMEN_SHIFT_BUILD: 2026-07-04-v17.2 -->
-<html lang="zh-TW" data-app-version="2026-07-04-v17.2">
+<!-- DABEIMEN_SHIFT_BUILD: 2026-07-04-v17.3 -->
+<html lang="zh-TW" data-app-version="2026-07-04-v17.3">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="application-version" content="2026-07-04-v17.2">
+    <meta name="application-version" content="2026-07-04-v17.3">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -192,9 +192,15 @@
 
         <!-- ================= 頁面 1：單日排班 ================= -->
         <div id="page-daily" class="flex flex-col flex-1 p-5 pt-2">
-            <div class="flex justify-between items-center mb-4">
-                <p id="daily-title-date" class="text-lg font-bold text-[#1A1D20]">-</p>
-                <span class="text-xs font-bold bg-white text-gray-500 px-2 py-1 rounded shadow-sm">單日檢視</span>
+            <div class="flex justify-between items-center gap-3 mb-4">
+                <p id="daily-title-date" class="text-lg font-bold text-[#1A1D20] min-w-0">-</p>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="hidden sm:inline-flex text-xs font-bold bg-white text-gray-500 px-2 py-1 rounded shadow-sm">單日檢視</span>
+                    <button type="button" id="go-today-button" onclick="goToToday()" class="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-gradient-to-r from-white to-amber-50 px-3 py-2 text-xs font-black text-amber-700 shadow-sm transition active:scale-95 disabled:cursor-default disabled:opacity-60" aria-label="回到今天日期">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <span id="go-today-label">回到今天</span>
+                    </button>
+                </div>
             </div>
             
             <div id="date-slider" class="flex gap-2.5 overflow-x-auto no-scrollbar py-2"></div>
@@ -308,7 +314,7 @@
     </div>
 
     <script>
-        const APP_VERSION = "2026-07-04-v17.2";
+        const APP_VERSION = "2026-07-04-v17.3";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
         const startWeekdays = { 6: 0, 7: 2 }; 
@@ -1078,9 +1084,57 @@
             renderCalendarPage();
         }
 
+        function goToToday() {
+            if (navigator.vibrate) navigator.vibrate(30);
+
+            const today = new Date();
+            const todayYear = today.getFullYear();
+            const todayMonth = today.getMonth() + 1;
+            const todayDay = today.getDate();
+
+            if (todayYear !== scheduleYear || !appData[todayMonth]) {
+                alert(`目前班表尚未提供 ${todayYear} 年 ${todayMonth} 月資料`);
+                return;
+            }
+
+            currentMonth = todayMonth;
+            currentSelectedDay = Math.min(todayDay, appData[currentMonth].days);
+            calendarSelectedDay = currentSelectedDay;
+            currentEmployeeFilter = 'all';
+            dayInitiated = false;
+
+            const monthSelect = document.getElementById("global-month");
+            if (monthSelect) monthSelect.value = String(currentMonth);
+
+            document.getElementById("calendar-title-month").innerText = `${currentMonth}月 班表日曆`;
+            document.getElementById("summary-title-month").innerText = `${currentMonth}月 休假總覽`;
+
+            initEmployeeFilter();
+            renderDailyPage(currentSelectedDay);
+            renderCalendarPage();
+            renderSummaryPage();
+        }
+
+        function updateTodayButton(day) {
+            const button = document.getElementById("go-today-button");
+            const label = document.getElementById("go-today-label");
+            if (!button || !label) return;
+
+            const today = new Date();
+            const isToday = today.getFullYear() === scheduleYear
+                && currentMonth === today.getMonth() + 1
+                && day === today.getDate();
+
+            button.disabled = isToday;
+            label.textContent = isToday ? "今天" : "回到今天";
+            button.classList.toggle("ring-2", isToday);
+            button.classList.toggle("ring-amber-100", isToday);
+        }
+
         function renderDailyPage(day) {
             currentSelectedDay = day;
             document.getElementById("daily-title-date").innerText = `${currentMonth}月${day}日 ${getWeekdayString(currentMonth, day)}`;
+            updateTodayButton(day);
 
             const slider = document.getElementById("date-slider");
             slider.innerHTML = "";
