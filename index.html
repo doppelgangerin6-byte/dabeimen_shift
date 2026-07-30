@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- DABEIMEN_SHIFT_BUILD: 2026-07-30-v17.6 -->
-<html lang="zh-TW" data-app-version="2026-07-30-v17.6">
+<!-- DABEIMEN_SHIFT_BUILD: 2026-07-30-v17.7 -->
+<html lang="zh-TW" data-app-version="2026-07-30-v17.7">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="application-version" content="2026-07-30-v17.6">
+    <meta name="application-version" content="2026-07-30-v17.7">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -152,7 +152,7 @@
         }
 
 
-        /* v17.6：療癒微動畫＋手機版面校正，保留診所系統的乾淨科技感 */
+        /* v17.7：療癒微動畫＋手機版面校正，保留診所系統的乾淨科技感 */
         @keyframes softFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
         @keyframes gentlePop { 0% { transform: scale(.94); opacity: .72; } 70% { transform: scale(1.035); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes cardRise { from { opacity: 0; transform: translateY(12px) scale(.985); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
@@ -270,7 +270,7 @@
         .holiday-mascot { display: inline-block; animation: holidayBob 2.7s ease-in-out infinite; }
 
 
-        /* v17.6：手機版面安全校正，避免預覽／手機小螢幕被切到 */
+        /* v17.7：手機版面安全校正，避免預覽／手機小螢幕被切到 */
         html, body {
             width: 100%;
             max-width: 100%;
@@ -370,6 +370,108 @@
             }
         }
 
+
+        /* v17.7：端正校正版，修正預覽/手機畫面左偏與標題被吃字 */
+        body {
+            display: block !important;
+            min-width: 0 !important;
+            text-align: left;
+        }
+        .app-shell {
+            width: 100% !important;
+            max-width: 28rem !important;
+            margin-inline: auto !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+            overflow-y: visible !important;
+            overflow-x: clip !important;
+        }
+        .top-shell {
+            width: 100% !important;
+            max-width: 28rem !important;
+            margin-inline: auto !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        .top-row {
+            display: flex !important;
+            width: 100% !important;
+            align-items: flex-start !important;
+            justify-content: space-between !important;
+            gap: .75rem !important;
+        }
+        .brand-title {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            max-width: calc(100% - 8.6rem) !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            transform: none !important;
+            text-align: left !important;
+            overflow: visible !important;
+        }
+        .brand-title .brand-main,
+        .brand-title .brand-tech {
+            display: block !important;
+            white-space: nowrap !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            transform: none !important;
+        }
+        .brand-title .brand-main {
+            font-size: clamp(1.32rem, 5.5vw, 1.62rem) !important;
+            line-height: 1.05 !important;
+            letter-spacing: -.04em !important;
+        }
+        .brand-title .brand-tech {
+            font-size: clamp(1.28rem, 5.7vw, 1.62rem) !important;
+            line-height: 1.08 !important;
+            letter-spacing: -.035em !important;
+        }
+        .month-picker {
+            flex: 0 0 auto !important;
+            margin: 0 !important;
+            transform: none;
+        }
+        #global-month {
+            max-width: 8rem !important;
+        }
+        .weather-center,
+        #weather-advice,
+        #page-daily,
+        #page-calendar,
+        #page-summary {
+            width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            transform: none !important;
+        }
+        #weather-widget {
+            width: min(100%, 19.5rem) !important;
+            max-width: 19.5rem !important;
+        }
+        #date-slider {
+            width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            scroll-padding-left: 0 !important;
+        }
+        .bottom-nav-shell {
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            margin: 0 !important;
+        }
+        @media (max-width: 360px) {
+            .top-shell { padding-left: .82rem !important; padding-right: .82rem !important; }
+            .top-row { gap: .55rem !important; }
+            .brand-title { max-width: calc(100% - 7.55rem) !important; }
+            .brand-title .brand-main { font-size: 1.18rem !important; }
+            .brand-title .brand-tech { font-size: 1.18rem !important; }
+            #global-month { max-width: 7.35rem !important; font-size: .74rem !important; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.001ms !important;
@@ -380,9 +482,9 @@
 
     </style>
 </head>
-<body class="bg-[#F4F6F8] flex justify-center min-h-screen">
+<body class="bg-[#F4F6F8] min-h-screen">
 
-    <div class="app-shell w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-28 min-h-screen overflow-hidden">
+    <div class="app-shell w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-28 min-h-screen">
         
         <!-- ================= 全域頂部導覽列 ================= -->
         <div class="top-shell px-5 pt-5 pb-2 sticky top-0 z-40 bg-[#F4F6F8]">
@@ -545,7 +647,7 @@
     </div>
 
     <script>
-        const APP_VERSION = "2026-07-30-v17.6";
+        const APP_VERSION = "2026-07-30-v17.7";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
         const startWeekdays = { 6: 0, 7: 2, 8: 5 }; 
