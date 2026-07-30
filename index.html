@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- DABEIMEN_SHIFT_BUILD: 2026-07-30-v17.7 -->
-<html lang="zh-TW" data-app-version="2026-07-30-v17.7">
+<!-- DABEIMEN_SHIFT_BUILD: 2026-07-30-v17.8 -->
+<html lang="zh-TW" data-app-version="2026-07-30-v17.8">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="application-version" content="2026-07-30-v17.7">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="application-version" content="2026-07-30-v17.8">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -15,7 +15,7 @@
     <title>大北門讚 SmartShift｜診所智慧班表</title>
     <meta name="theme-color" content="#F4F6F8">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <link rel="apple-touch-icon" href="app_icon.jpg">
     <link rel="icon" type="image/jpeg" href="app_icon.jpg">
@@ -152,7 +152,7 @@
         }
 
 
-        /* v17.7：療癒微動畫＋手機版面校正，保留診所系統的乾淨科技感 */
+        /* v17.8：療癒微動畫＋手機版面校正，保留診所系統的乾淨科技感 */
         @keyframes softFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
         @keyframes gentlePop { 0% { transform: scale(.94); opacity: .72; } 70% { transform: scale(1.035); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes cardRise { from { opacity: 0; transform: translateY(12px) scale(.985); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
@@ -270,7 +270,7 @@
         .holiday-mascot { display: inline-block; animation: holidayBob 2.7s ease-in-out infinite; }
 
 
-        /* v17.7：手機版面安全校正，避免預覽／手機小螢幕被切到 */
+        /* v17.8：手機版面安全校正，避免預覽／手機小螢幕被切到 */
         html, body {
             width: 100%;
             max-width: 100%;
@@ -371,7 +371,7 @@
         }
 
 
-        /* v17.7：端正校正版，修正預覽/手機畫面左偏與標題被吃字 */
+        /* v17.8：端正校正版，修正預覽/手機畫面左偏與標題被吃字 */
         body {
             display: block !important;
             min-width: 0 !important;
@@ -472,6 +472,103 @@
             #global-month { max-width: 7.35rem !important; font-size: .74rem !important; }
         }
 
+
+
+        /* v17.8：手機真機安全版，修正 iPhone 狀態列壓到內容、頁尾蓋住班表 */
+        :root {
+            --app-max-width: 28rem;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        body {
+            min-height: 100dvh !important;
+            background: #F4F6F8 !important;
+            overscroll-behavior-x: none;
+        }
+        .app-shell {
+            min-height: 100dvh !important;
+            width: min(100%, var(--app-max-width)) !important;
+            max-width: var(--app-max-width) !important;
+            padding-bottom: calc(7.25rem + var(--safe-bottom)) !important;
+            margin-inline: auto !important;
+            overflow-x: hidden !important;
+            isolation: isolate;
+        }
+        .app-shell > .top-shell {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 60 !important;
+            padding-top: 16px !important;
+            padding-top: calc(16px + var(--safe-top)) !important;
+            padding-bottom: .7rem !important;
+            background: linear-gradient(180deg, rgba(244,246,248,.98), rgba(244,246,248,.92)) !important;
+            -webkit-backdrop-filter: blur(18px) saturate(145%);
+            backdrop-filter: blur(18px) saturate(145%);
+            border-bottom: 1px solid rgba(226,232,240,.46);
+        }
+        .top-row {
+            align-items: flex-start !important;
+        }
+        .brand-title .brand-main,
+        .brand-title .brand-tech {
+            text-shadow: none !important;
+        }
+        .weather-center {
+            margin-top: .55rem !important;
+        }
+        #weather-widget {
+            min-height: 2.35rem !important;
+            width: min(100%, 18.4rem) !important;
+            max-width: 18.4rem !important;
+            padding-top: .5rem !important;
+            padding-bottom: .5rem !important;
+        }
+        #weather-advice {
+            margin-top: .55rem !important;
+            padding: .58rem .78rem !important;
+            min-height: auto !important;
+        }
+        #weather-advice-icon {
+            width: 1.75rem !important;
+            height: 1.75rem !important;
+        }
+        #weather-advice-text {
+            -webkit-line-clamp: 2 !important;
+            line-height: 1.42 !important;
+        }
+        #page-daily,
+        #page-calendar,
+        #page-summary {
+            flex: 0 0 auto !important;
+            min-height: auto !important;
+            padding-bottom: 1rem !important;
+        }
+        #daily-shift-cards {
+            padding-bottom: 1rem !important;
+        }
+        #app-footer {
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            z-index: 1 !important;
+            margin: .25rem auto calc(1rem + var(--safe-bottom)) !important;
+            color: rgba(100,116,139,.62) !important;
+            pointer-events: none;
+        }
+        .bottom-nav-shell {
+            z-index: 80 !important;
+            bottom: 0 !important;
+            padding-bottom: calc(9px + var(--safe-bottom)) !important;
+        }
+        @media (max-width: 380px) {
+            .brand-title { max-width: calc(100% - 7.7rem) !important; }
+            .brand-title .brand-main { font-size: 1.14rem !important; }
+            .brand-title .brand-tech { font-size: 1.18rem !important; }
+            #global-month { max-width: 7.45rem !important; }
+            #weather-widget { width: min(100%, 17.5rem) !important; }
+            #weather-advice { padding-left: .68rem !important; padding-right: .68rem !important; }
+        }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.001ms !important;
@@ -622,7 +719,7 @@
         </div>
         
         <!-- ================= Footer 版權 ================= -->
-        <div class="text-[10px] text-gray-400 text-center py-2 absolute bottom-20 w-full">
+        <div id="app-footer" class="text-[10px] text-gray-400 text-center py-2 w-full">
             Built by Tigershyness | 大北門讚 SmartShift
         </div>
 
@@ -647,7 +744,7 @@
     </div>
 
     <script>
-        const APP_VERSION = "2026-07-30-v17.7";
+        const APP_VERSION = "2026-07-30-v17.8";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
         const startWeekdays = { 6: 0, 7: 2, 8: 5 }; 
