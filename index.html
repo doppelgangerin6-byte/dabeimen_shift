@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- DABEIMEN_SHIFT_BUILD: 2026-07-30-v17.8 -->
-<html lang="zh-TW" data-app-version="2026-07-30-v17.8">
+<!-- DABEIMEN_SHIFT_BUILD: 2026-07-30-v17.9 -->
+<html lang="zh-TW" data-app-version="2026-07-30-v17.9">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-07-30-v17.8">
+    <meta name="application-version" content="2026-07-30-v17.9">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -152,7 +152,7 @@
         }
 
 
-        /* v17.8：療癒微動畫＋手機版面校正，保留診所系統的乾淨科技感 */
+        /* v17.9：療癒微動畫＋手機版面校正，保留診所系統的乾淨科技感 */
         @keyframes softFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
         @keyframes gentlePop { 0% { transform: scale(.94); opacity: .72; } 70% { transform: scale(1.035); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes cardRise { from { opacity: 0; transform: translateY(12px) scale(.985); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
@@ -270,7 +270,7 @@
         .holiday-mascot { display: inline-block; animation: holidayBob 2.7s ease-in-out infinite; }
 
 
-        /* v17.8：手機版面安全校正，避免預覽／手機小螢幕被切到 */
+        /* v17.9：手機版面安全校正，避免預覽／手機小螢幕被切到 */
         html, body {
             width: 100%;
             max-width: 100%;
@@ -371,7 +371,7 @@
         }
 
 
-        /* v17.8：端正校正版，修正預覽/手機畫面左偏與標題被吃字 */
+        /* v17.9：端正校正版，修正預覽/手機畫面左偏與標題被吃字 */
         body {
             display: block !important;
             min-width: 0 !important;
@@ -474,7 +474,7 @@
 
 
 
-        /* v17.8：手機真機安全版，修正 iPhone 狀態列壓到內容、頁尾蓋住班表 */
+        /* v17.9：手機真機安全版，修正 iPhone 狀態列壓到內容、頁尾蓋住班表 */
         :root {
             --app-max-width: 28rem;
             --safe-top: env(safe-area-inset-top, 0px);
@@ -569,6 +569,162 @@
             #weather-widget { width: min(100%, 17.5rem) !important; }
             #weather-advice { padding-left: .68rem !important; padding-right: .68rem !important; }
         }
+
+
+        /* v17.9：手機真機防歪版，把橫向溢出完全鎖死 */
+        html,
+        body {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+            position: relative !important;
+            touch-action: pan-y !important;
+        }
+        body {
+            display: block !important;
+            min-height: 100dvh !important;
+            background: #F4F6F8 !important;
+        }
+        .app-shell {
+            width: min(100svw, 28rem) !important;
+            max-width: min(100svw, 28rem) !important;
+            min-width: 0 !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            box-sizing: border-box !important;
+            transform: none !important;
+            left: auto !important;
+            right: auto !important;
+        }
+        @supports not (width: 100svw) {
+            .app-shell {
+                width: min(100vw, 28rem) !important;
+                max-width: min(100vw, 28rem) !important;
+            }
+        }
+        .app-shell::before {
+            left: 0 !important;
+            right: 0 !important;
+        }
+        .top-shell,
+        #page-daily,
+        #page-calendar,
+        #page-summary,
+        #calendar-detail-card,
+        .calendar-detail-card,
+        #daily-shift-cards,
+        #calendar-grid,
+        #employee-summary-list {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        .top-row {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) auto !important;
+            align-items: start !important;
+            gap: .7rem !important;
+        }
+        .brand-title {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+            padding-left: 0 !important;
+        }
+        .brand-title .brand-main,
+        .brand-title .brand-tech {
+            display: block !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: clip !important;
+            white-space: nowrap !important;
+        }
+        #weather-widget,
+        #weather-advice {
+            max-width: 100% !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+        #date-slider {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            overscroll-behavior-inline: contain !important;
+        }
+        .calendar-shift-stack {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: .75rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+        .calendar-shift-stack > * {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+        .staff-row,
+        #calendar-detail-card .flex,
+        #calendar-detail-card .flex-1 {
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+        .staff-row .time-pill,
+        #calendar-detail-card .time-pill {
+            flex: 0 0 auto !important;
+            max-width: 48% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .bottom-nav-shell {
+            width: min(100svw, 28rem) !important;
+            max-width: min(100svw, 28rem) !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            overflow: hidden !important;
+        }
+        @supports not (width: 100svw) {
+            .bottom-nav-shell {
+                width: min(100vw, 28rem) !important;
+                max-width: min(100vw, 28rem) !important;
+            }
+        }
+        @media (max-width: 390px) {
+            .top-shell {
+                padding-left: .9rem !important;
+                padding-right: .9rem !important;
+            }
+            .brand-title .brand-main {
+                font-size: clamp(1.02rem, 5vw, 1.24rem) !important;
+            }
+            .brand-title .brand-tech {
+                font-size: clamp(1.05rem, 5.1vw, 1.28rem) !important;
+            }
+            #global-month {
+                max-width: 7.8rem !important;
+                font-size: .78rem !important;
+            }
+            #page-daily,
+            #page-calendar,
+            #page-summary {
+                padding-left: .9rem !important;
+                padding-right: .9rem !important;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.001ms !important;
@@ -744,8 +900,23 @@
     </div>
 
     <script>
-        const APP_VERSION = "2026-07-30-v17.8";
+        const APP_VERSION = "2026-07-30-v17.9";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
+
+
+        function resetHorizontalScroll() {
+            try {
+                document.documentElement.scrollLeft = 0;
+                document.body.scrollLeft = 0;
+                if (window.scrollX !== 0) window.scrollTo(0, window.scrollY || 0);
+            } catch (error) {}
+        }
+        window.addEventListener("load", () => setTimeout(resetHorizontalScroll, 0));
+        window.addEventListener("resize", () => setTimeout(resetHorizontalScroll, 50));
+        window.addEventListener("orientationchange", () => setTimeout(resetHorizontalScroll, 180));
+        document.addEventListener("scroll", () => {
+            if (window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft) resetHorizontalScroll();
+        }, { passive: true });
 
         const startWeekdays = { 6: 0, 7: 2, 8: 5 }; 
 
@@ -3164,6 +3335,7 @@
             }
             applyStaggerAnimation("#calendar-grid .calendar-day-cell", 12);
             updateCalendarDetail(calendarSelectedDay);
+            setTimeout(resetHorizontalScroll, 0);
         }
 
         function selectCalendarDay(day) {
@@ -3182,7 +3354,8 @@
                         void innerCard.offsetWidth; 
                         innerCard.classList.add("animate-fade-in");
                     }
-                    detailCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    detailCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                    setTimeout(resetHorizontalScroll, 80);
                 }
             }, 50);
         }
@@ -3242,9 +3415,9 @@
                 if (otherLate.length) lateHtml += `<div class="mt-2 pt-1.5 border-t border-blue-100"><p class="text-[10px] text-gray-400 font-medium">搭檔：${otherLate.map(escapeHtml).join("、")}</p></div>`;
             }
 
-            const containerClass = hasMidShiftInDay ? "flex flex-col gap-3" : "flex gap-3";
+            const containerClass = "calendar-shift-stack";
             const midCardHtml = hasMidShiftInDay ? `
-                <div class="flex-1 bg-[#F0FFF4] rounded-xl p-3 border border-green-100 flex flex-col">
+                <div class="flex-1 bg-[#F0FFF4] rounded-xl p-3 border border-green-100 flex flex-col min-w-0">
                     <div class="flex items-center gap-1.5 mb-2">
                         <i class="fa-solid fa-mug-hot text-emerald-500 text-sm"></i>
                         <span class="text-xs font-bold text-gray-500">午班 13:30 - 17:00</span>
