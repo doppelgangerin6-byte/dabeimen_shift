@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-11-23-v18.10">
+    <meta name="application-version" content="2026-11-23-v18.11">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -735,6 +735,66 @@
             }
         }
 
+    
+        /* ===== 我的班表 ===== */
+        .my-card {
+            background: linear-gradient(145deg, #1A1D20 0%, #2A2F35 100%);
+            border-radius: 1.5rem;
+            padding: 1rem 1rem 0.9rem;
+            color: #fff;
+            box-shadow: 0 10px 24px -14px rgba(26, 29, 32, .55);
+        }
+        .my-eyebrow { font-size: 11px; font-weight: 900; letter-spacing: .08em; color: #F5C144; }
+        .my-link {
+            font-size: 11px; font-weight: 800; color: rgba(255,255,255,.7);
+            border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 3px 10px;
+        }
+        .my-link:active { transform: scale(.95); }
+        .my-status { margin-top: .55rem; font-size: 1.05rem; font-weight: 900; line-height: 1.4; display: flex; align-items: center; flex-wrap: wrap; gap: .15rem; }
+        .my-sub { font-size: .75rem; font-weight: 700; color: rgba(255,255,255,.6); }
+        .my-live-dot { width: .55rem; height: .55rem; border-radius: 999px; background: #34D399; margin-right: .4rem; box-shadow: 0 0 0 4px rgba(52,211,153,.25); }
+        .my-row { display: flex; align-items: center; gap: .6rem; text-align: left; width: 100%; }
+        .my-row-button { border-radius: .75rem; }
+        .my-row-button:active { transform: scale(.98); }
+        .my-row-label { flex-shrink: 0; font-size: 10px; font-weight: 900; color: rgba(255,255,255,.45); width: 1.8rem; }
+        .my-pill { font-size: 11px; font-weight: 900; border-radius: .6rem; padding: 3px 8px; white-space: nowrap; }
+        .my-pill-早 { background: #FEF3C7; color: #B45309; }
+        .my-pill-午 { background: #D1FAE5; color: #047857; }
+        .my-pill-晚 { background: #E0E7FF; color: #4338CA; }
+        .my-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .3rem; margin-top: .85rem; }
+        .my-week-day {
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            background: rgba(255,255,255,.06); border: 1.5px solid transparent; border-radius: .8rem;
+            padding: .4rem 0 .45rem; min-width: 0;
+        }
+        .my-week-day:active { transform: scale(.94); }
+        .my-week-day.is-today { border-color: #F5C144; background: rgba(245,193,68,.14); }
+        .my-week-day.is-past { opacity: .45; }
+        .my-week-wd { font-size: 9px; font-weight: 800; color: rgba(255,255,255,.5); }
+        .my-week-date { font-size: .85rem; font-weight: 900; line-height: 1.1; }
+        .my-week-tags { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 1.1rem; }
+        .my-week-tag { font-size: 9px; font-weight: 900; border-radius: .35rem; padding: 0 5px; line-height: 1.5; }
+        .my-week-off { font-size: 9px; font-weight: 800; color: rgba(255,255,255,.4); line-height: 1.5; }
+        .my-stats {
+            display: flex; flex-wrap: wrap; gap: .35rem .9rem; margin-top: .8rem; padding-top: .7rem;
+            border-top: 1px solid rgba(255,255,255,.1); font-size: 11px; font-weight: 700; color: rgba(255,255,255,.6);
+        }
+        .my-stats b { color: #F5C144; font-weight: 900; }
+        .my-name-chip {
+            font-size: .85rem; font-weight: 900; color: #1A1D20; background: #fff;
+            border-radius: .8rem; padding: .45rem .9rem; border: 2px solid transparent;
+        }
+        .my-name-chip.is-current { border-color: #F5C144; }
+        .my-name-chip:active { transform: scale(.94); }
+        .me-row {
+            background: linear-gradient(90deg, rgba(245,193,68,.22), rgba(245,193,68,.04));
+            border-radius: .75rem;
+            box-shadow: inset 3px 0 0 #F5C144;
+        }
+        .me-badge {
+            display: inline-flex; align-items: center; font-size: 9px; font-weight: 900; color: #1A1D20;
+            background: #F5C144; border-radius: 999px; padding: 1px 6px; line-height: 1.4;
+        }
     </style>
 </head>
 <body class="bg-[#F4F6F8] min-h-screen">
@@ -777,6 +837,8 @@
 
         <!-- ================= 頁面 1：單日排班 ================= -->
         <div id="page-daily" class="flex flex-col flex-1 p-5 pt-2">
+            <!-- 我的班表（記住「我是誰」，存在這支手機上） -->
+            <div id="my-shift-card" class="mb-4"></div>
             <div class="flex justify-between items-center gap-3 mb-4">
                 <p id="daily-title-date" class="text-lg font-bold text-[#1A1D20] min-w-0">-</p>
                 <div class="flex items-center gap-2 shrink-0">
@@ -898,9 +960,9 @@
 
     </div>
 
-    <script src="shift-data.js?v=2026-11-23-v18.10"></script>
+    <script src="shift-data.js?v=2026-11-23-v18.11"></script>
     <script>
-        const APP_VERSION = "2026-11-23-v18.10";
+        const APP_VERSION = "2026-11-23-v18.11";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
 
@@ -1219,11 +1281,14 @@
                 ? `<span class="ml-1.5 inline-flex items-center gap-1 rounded-full bg-cyan-50/80 border border-cyan-200 text-cyan-700 px-1.5 py-0.5 text-[9px] font-black whitespace-nowrap"><i class="fa-solid fa-location-dot text-[8px]"></i>${escapeHtml(person.support)}</span>`
                 : "";
 
+            const isMe = myName && person.name === myName;
+            const meRow = isMe ? " me-row" : "";
+            const meBadge = isMe ? `<span class="me-badge ml-1.5">我</span>` : "";
             return `
-                <div class="staff-row reveal-pop flex items-center justify-between gap-3 text-sm min-h-[30px] px-1 py-0.5">
+                <div class="staff-row reveal-pop flex items-center justify-between gap-3 text-sm min-h-[30px] px-1 py-0.5${meRow}">
                     <div class="flex items-center min-w-0 flex-wrap gap-y-1">
                         <span class="w-2 h-2 rounded-full ${style.dot} mr-2 shrink-0"></span>
-                        <span class="font-bold text-[#2D3748] shrink-0">${escapeHtml(person.name)}</span>
+                        <span class="font-bold text-[#2D3748] shrink-0">${escapeHtml(person.name)}</span>${meBadge}
                         ${holidayBadge}
                         ${supportBadge}
                     </div>
@@ -1240,8 +1305,9 @@
             const supportBadge = person.support
                 ? `<span class="text-[8px] font-black text-cyan-700 bg-cyan-50/80 border border-cyan-200 rounded px-1 py-0.5 whitespace-nowrap">${escapeHtml(person.support)}</span>`
                 : "";
-            return `<div class="flex items-center justify-between gap-1.5 py-0.5">
-                <span class="text-xs font-bold text-[#2D3748] flex items-center gap-1 min-w-0 flex-wrap"><span class="w-1.5 h-1.5 rounded-full ${style.dot} shrink-0"></span>${escapeHtml(person.name)} ${holidayBadge} ${supportBadge}</span>
+            const isMe = myName && person.name === myName;
+            return `<div class="flex items-center justify-between gap-1.5 py-0.5${isMe ? " me-row px-1" : ""}">
+                <span class="text-xs font-bold text-[#2D3748] flex items-center gap-1 min-w-0 flex-wrap"><span class="w-1.5 h-1.5 rounded-full ${style.dot} shrink-0"></span>${escapeHtml(person.name)}${isMe ? ` <span class="me-badge">我</span>` : ""} ${holidayBadge} ${supportBadge}</span>
                 <span class="time-pill text-[9px] font-black border rounded-lg px-1.5 py-1 whitespace-nowrap ${style.badge}">${escapeHtml(person.hours)}</span>
             </div>`;
         }
@@ -1257,6 +1323,7 @@
             names.forEach(name => {
                 filterSelect.innerHTML += `<option value="${name}">${name}</option>`;
             });
+            if (currentEmployeeFilter !== "all" && !names.has(currentEmployeeFilter)) currentEmployeeFilter = "all";
             filterSelect.value = currentEmployeeFilter;
         }
 
@@ -1264,7 +1331,7 @@
             if (navigator.vibrate) navigator.vibrate(30);
 
             currentMonth = parseInt(month);
-            currentEmployeeFilter = 'all';
+            currentEmployeeFilter = defaultEmployeeFilter();
             dayInitiated = false; 
 
             if (currentSelectedDay > appData[currentMonth].days) currentSelectedDay = 1;
@@ -1301,7 +1368,7 @@
             currentMonth = todayMonth;
             currentSelectedDay = Math.min(todayDay, appData[currentMonth].days);
             calendarSelectedDay = currentSelectedDay;
-            currentEmployeeFilter = 'all';
+            currentEmployeeFilter = defaultEmployeeFilter();
             dayInitiated = false;
 
             const monthSelect = document.getElementById("global-month");
@@ -1347,6 +1414,216 @@
             if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "rainy";
             if (code >= 45 && code <= 48) return "foggy";
             return "cloudy";
+        }
+
+        // ===== 我的班表：記住「我是誰」（只存在這支手機，不會上傳）=====
+        const MY_NAME_KEY = "dabeimen_my_name";
+        let myName = (() => {
+            try { return localStorage.getItem(MY_NAME_KEY) || ""; } catch (error) { return ""; }
+        })();
+        let myPickerOpen = false;
+        const WEEKDAY_CHARS = ["日", "一", "二", "三", "四", "五", "六"];
+
+        function allStaffNames() {
+            const names = [];
+            availableMonths.forEach(month => {
+                (appData[month]?.stats || []).forEach(emp => {
+                    if (!names.includes(emp.name)) names.push(emp.name);
+                });
+            });
+            return names;
+        }
+
+        function defaultEmployeeFilter() {
+            return myName && appData[currentMonth]?.stats?.some(emp => emp.name === myName) ? myName : "all";
+        }
+
+        function setMyName(index) {
+            const name = allStaffNames()[index];
+            if (!name) return;
+            if (navigator.vibrate) navigator.vibrate(30);
+            myName = name;
+            myPickerOpen = false;
+            try { localStorage.setItem(MY_NAME_KEY, name); } catch (error) {}
+            currentEmployeeFilter = defaultEmployeeFilter();
+            initEmployeeFilter();
+            renderMyShiftCard();
+            renderDailyPage(currentSelectedDay);
+        }
+
+        function openMyPicker(open = true) {
+            if (navigator.vibrate) navigator.vibrate(30);
+            myPickerOpen = open;
+            renderMyShiftCard();
+        }
+
+        // 某天（Date）我有哪些班；回傳 null 代表那個月班表還沒上傳
+        function getMyShiftsOn(date) {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            if (!appData[month] || yearOfMonth(month) !== date.getFullYear() || day > appData[month].days) return null;
+            const shiftData = getShiftData(month, day);
+            const result = [];
+            [["早班", "早"], ["午班", "午"], ["晚班", "晚"]].forEach(([type, short]) => {
+                const person = shiftData[type].find(p => p.name === myName);
+                if (!person) return;
+                const hours = person.hours || "";
+                const [startText, endText] = hours.split("-").map(t => t.trim());
+                result.push({
+                    type, short, hours,
+                    start: timeToMinutes(startText),
+                    end: timeToMinutes(endText),
+                    holidayWork: !!person.holidayWork
+                });
+            });
+            return result;
+        }
+
+        function formatDuration(totalMinutes) {
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            if (h === 0) return `${m} 分鐘`;
+            return m === 0 ? `${h} 小時` : `${h} 小時 ${m} 分`;
+        }
+
+        function shiftPillsHtml(shifts) {
+            return shifts.map(s => `<span class="my-pill my-pill-${s.short}">${s.type} ${escapeHtml(s.hours)}</span>`).join("");
+        }
+
+        function jumpToDate(month, day) {
+            if (navigator.vibrate) navigator.vibrate(30);
+            if (currentMonth !== month) {
+                const monthSelect = document.getElementById("global-month");
+                if (monthSelect) monthSelect.value = String(month);
+                switchMonth(month);
+            }
+            calendarSelectedDay = day;
+            dayInitiated = false;
+            renderDailyPage(day);
+        }
+
+        function renderMyPicker(container) {
+            const names = allStaffNames();
+            const chips = names.map((name, i) => `
+                <button type="button" onclick="setMyName(${i})" class="my-name-chip${name === myName ? " is-current" : ""}">${escapeHtml(name)}</button>`).join("");
+            container.innerHTML = `
+                <div class="my-card">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="my-eyebrow">我的班表</p>
+                            <p class="text-base font-black text-white mt-0.5">👋 你是哪一位？</p>
+                            <p class="text-[11px] font-bold text-white/60 mt-1">選一次就會記住，之後打開直接看到自己的班</p>
+                        </div>
+                        ${myName ? `<button type="button" onclick="openMyPicker(false)" class="my-link shrink-0">取消</button>` : ""}
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-3">${chips}</div>
+                </div>`;
+        }
+
+        function renderMyShiftCard() {
+            const container = document.getElementById("my-shift-card");
+            if (!container) return;
+            const names = allStaffNames();
+            if (!names.length) { container.innerHTML = ""; return; }
+            if (!myName || !names.includes(myName) || myPickerOpen) {
+                renderMyPicker(container);
+                return;
+            }
+
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+            const todayShifts = getMyShiftsOn(today);
+
+            // 今天狀態
+            let statusHtml;
+            let todayHtml;
+            if (todayShifts === null) {
+                statusHtml = `<p class="my-status">📭 今天的班表還沒上傳</p>`;
+                todayHtml = "";
+            } else if (todayShifts.length === 0) {
+                statusHtml = `<p class="my-status">${today.getDay() === 0 ? "🌼 今天公休，好好休息" : "🌴 今天休假，好好休息"}</p>`;
+                todayHtml = "";
+            } else {
+                const current = todayShifts.find(s => nowMinutes >= s.start && nowMinutes < s.end);
+                const upcoming = todayShifts.find(s => nowMinutes < s.start);
+                if (current) {
+                    statusHtml = `<p class="my-status"><span class="my-live-dot"></span>${current.type}上班中・${escapeHtml(current.hours.split("-")[1].trim())} 下班<span class="my-sub">（還有 ${formatDuration(current.end - nowMinutes)}）</span></p>`;
+                } else if (upcoming) {
+                    statusHtml = `<p class="my-status">⏰ ${formatDuration(upcoming.start - nowMinutes)}後上${upcoming.type}<span class="my-sub">（${escapeHtml(upcoming.hours.split("-")[0].trim())}）</span></p>`;
+                } else {
+                    statusHtml = `<p class="my-status">✅ 今天辛苦了，已經下班</p>`;
+                }
+                todayHtml = `<div class="my-row"><span class="my-row-label">今天</span><div class="flex flex-wrap gap-1.5">${shiftPillsHtml(todayShifts)}</div></div>`;
+            }
+
+            // 下次上班（明天以後第一個有班的日子）
+            let nextHtml = `<div class="my-row"><span class="my-row-label">下次</span><span class="text-xs font-bold text-white/60">還沒排到，等下個月班表</span></div>`;
+            for (let i = 1; i <= 62; i++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+                const shifts = getMyShiftsOn(date);
+                if (shifts === null) break;
+                if (shifts.length) {
+                    const m = date.getMonth() + 1;
+                    const d = date.getDate();
+                    const when = i === 1 ? "明天" : (i === 2 ? "後天" : `${m}/${d}`);
+                    nextHtml = `<button type="button" onclick="jumpToDate(${m}, ${d})" class="my-row my-row-button">
+                        <span class="my-row-label">下次</span>
+                        <div class="flex flex-wrap items-center gap-1.5"><span class="text-xs font-black text-white">${when}（${WEEKDAY_CHARS[date.getDay()]}）</span>${shiftPillsHtml(shifts)}</div>
+                    </button>`;
+                    break;
+                }
+            }
+
+            // 本週（一 ~ 日）
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+            let weekHtml = "";
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+                const shifts = getMyShiftsOn(date);
+                const isToday = date.getTime() === today.getTime();
+                const isPast = date < today;
+                const m = date.getMonth() + 1;
+                const d = date.getDate();
+                let body;
+                if (shifts === null) body = `<span class="my-week-off">—</span>`;
+                else if (!shifts.length) body = `<span class="my-week-off">休</span>`;
+                else body = shifts.map(s => `<span class="my-week-tag my-pill-${s.short}">${s.short}</span>`).join("");
+                const click = shifts === null ? "" : `onclick="jumpToDate(${m}, ${d})"`;
+                weekHtml += `
+                    <button type="button" ${click} class="my-week-day${isToday ? " is-today" : ""}${isPast ? " is-past" : ""}">
+                        <span class="my-week-wd">${WEEKDAY_CHARS[date.getDay()]}</span>
+                        <span class="my-week-date">${d}</span>
+                        <span class="my-week-tags">${body}</span>
+                    </button>`;
+            }
+
+            // 本月統計
+            const statMonth = (appData[today.getMonth() + 1] && yearOfMonth(today.getMonth() + 1) === today.getFullYear())
+                ? today.getMonth() + 1 : latestMonth;
+            const stat = appData[statMonth]?.stats?.find(emp => emp.name === myName);
+            const statHtml = stat ? `
+                <div class="my-stats">
+                    <span>${statMonth}月共 <b>${stat.totalHours}</b> 小時</span>
+                    <span>休 <b>${(stat.fullLeaves || []).length}</b> 天</span>
+                    ${(stat.holidayWorkDays || []).length ? `<span>休假日出勤 <b>${stat.holidayWorkDays.length}</b> 天</span>` : ""}
+                </div>` : "";
+
+            container.innerHTML = `
+                <div class="my-card">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="my-eyebrow">🙋 ${escapeHtml(myName)} 的班表</p>
+                        <button type="button" onclick="openMyPicker(true)" class="my-link">換人</button>
+                    </div>
+                    ${statusHtml}
+                    <div class="flex flex-col gap-2 mt-3">
+                        ${todayHtml}
+                        ${nextHtml}
+                    </div>
+                    <div class="my-week">${weekHtml}</div>
+                    ${statHtml}
+                </div>`;
         }
 
         function renderDailyPage(day) {
@@ -1934,7 +2211,9 @@
             document.getElementById("calendar-title-month").innerText = `${currentMonth}月 班表日曆`;
             document.getElementById("summary-title-month").innerText = `${currentMonth}月 休假總覽`;
 
+            currentEmployeeFilter = defaultEmployeeFilter();
             initEmployeeFilter();
+            renderMyShiftCard();
             renderDailyPage(currentSelectedDay);
 
             // 啟動定位與氣象服務
@@ -1953,6 +2232,7 @@
             // 🌟 啟動心跳神經：每 1 分鐘自動檢查是否到了下班時間
             setInterval(() => {
                 updateSmartStatus(currentSelectedDay);
+                renderMyShiftCard();
             }, 60000); 
         });
 
