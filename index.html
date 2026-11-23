@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-11-23-v18.11">
+    <meta name="application-version" content="2026-11-23-v18.12">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -13,7 +13,7 @@
     <meta http-equiv="Expires" content="0">
 
     <title>大北門讚 SmartShift｜診所智慧班表</title>
-    <meta name="theme-color" content="#F4F6F8">
+    <meta name="theme-color" content="#FAF9F6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
@@ -21,7 +21,24 @@
     <link rel="icon" type="image/jpeg" href="app_icon.jpg">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        (() => {
+        // 大北門讚診所主視覺色票：奶茶摩卡、米白、香檳金（把原本的冷色系整組換成暖色）
+        const warm = { 50:"#FAF8F5",100:"#F3EFEA",200:"#E8E1DA",300:"#D6CCC3",400:"#A79C93",500:"#8A817A",600:"#6E655D",700:"#514943",800:"#3A332E",900:"#2A2522" };
+        const champagne = { 50:"#FBF7F0",100:"#F4EADA",200:"#EADBC0",300:"#DEC8A2",400:"#D0B386",500:"#C1A67D",600:"#A48347",700:"#8A6B3A",800:"#6F552E",900:"#574326" };
+        const cocoa = { 50:"#F8F3EF",100:"#F1E8E0",200:"#E2D3C6",300:"#CDB5A4",400:"#BA9C87",500:"#A9866F",600:"#8F6E59",700:"#7A5E4C",800:"#614A3C",900:"#4A392E" };
+        const blush = { 50:"#F9F1EE",100:"#F1DFD8",200:"#E6C8BD",300:"#D6AC9D",400:"#C4907F",500:"#B0715F",600:"#985C4B",700:"#7C4A3C" };
+        const sage = { 50:"#F2F6F0",100:"#E3EBDF",200:"#CFDDC9",300:"#B3C9AB",400:"#9DB59A",500:"#7E9C7A",600:"#5E7F5A",700:"#4C6749" };
+        tailwind.config = { theme: { extend: { colors: {
+            gray: warm, slate: warm,
+            sky: champagne, amber: champagne, yellow: champagne, orange: champagne,
+            indigo: cocoa, blue: cocoa, violet: cocoa, purple: cocoa, cyan: cocoa,
+            rose: blush, red: blush,
+            green: sage, emerald: sage
+        } } } };
+        })();
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -38,32 +55,32 @@
             -webkit-backdrop-filter: blur(18px) saturate(135%);
             backdrop-filter: blur(18px) saturate(135%);
             border: 1px solid rgba(255, 255, 255, 0.82);
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+            box-shadow: 0 12px 30px rgba(74, 57, 46, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.92);
         }
         .glass-card-morning {
-            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(255,248,222,.58), rgba(255,255,255,.72));
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(246,236,218,.62), rgba(255,255,255,.72));
         }
         .glass-card-mid {
-            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(220,252,231,.48), rgba(255,255,255,.72));
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(227,235,223,.55), rgba(255,255,255,.72));
         }
         .glass-card-evening {
-            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(238,242,255,.52), rgba(255,255,255,.72));
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(241,232,224,.62), rgba(255,255,255,.72));
         }
         .time-pill {
             -webkit-backdrop-filter: blur(12px) saturate(145%);
             backdrop-filter: blur(12px) saturate(145%);
-            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255,255,255,.95);
+            box-shadow: 0 5px 16px rgba(74, 57, 46, 0.07), inset 0 1px 0 rgba(255,255,255,.95);
         }
-        .time-pill-morning { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,237,179,.52)); border-color: rgba(245,158,11,.30); color: #B45309; }
-        .time-pill-mid { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(187,247,208,.48)); border-color: rgba(16,185,129,.26); color: #047857; }
-        .time-pill-purple { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(237,233,254,.68)); border-color: rgba(139,92,246,.28); color: #7C3AED; }
-        .time-pill-red { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(254,226,226,.66)); border-color: rgba(239,68,68,.28); color: #EF4444; }
-        .time-pill-green { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(209,250,229,.64)); border-color: rgba(16,185,129,.28); color: #059669; }
-        .time-pill-blue { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(219,234,254,.72)); border-color: rgba(59,130,246,.28); color: #2563EB; }
-        .time-pill-yellow { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(254,249,195,.78)); border-color: rgba(250,204,21,.34); color: #A16207; }
-        .time-pill-orange { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(255,237,213,.78)); border-color: rgba(249,115,22,.32); color: #C2410C; }
-        .time-pill-late { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(226,232,240,.70)); border-color: rgba(100,116,139,.28); color: #334155; }
-        .time-pill-gray { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(229,231,235,.68)); border-color: rgba(107,114,128,.24); color: #4B5563; }
+        .time-pill-morning { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(234,219,192,.55)); border-color: rgba(193,166,125,.42); color: #8A6B3A; }
+        .time-pill-mid { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(207,221,201,.55)); border-color: rgba(126,156,122,.36); color: #5E7F5A; }
+        .time-pill-purple { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(241,232,224,.68)); border-color: rgba(169,134,111,.28); color: #7A5E4C; }
+        .time-pill-red { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(241,223,216,.72)); border-color: rgba(176,113,95,.36); color: #A65A47; }
+        .time-pill-green { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(226,211,198,.6)); border-color: rgba(169,134,111,.36); color: #7A5E4C; }
+        .time-pill-blue { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(241,232,224,.72)); border-color: rgba(169,134,111,.28); color: #7A5E4C; }
+        .time-pill-yellow { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(244,234,218,.78)); border-color: rgba(193,166,125,.34); color: #8A6B3A; }
+        .time-pill-orange { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(244,234,218,.78)); border-color: rgba(193,166,125,.32); color: #A9866F; }
+        .time-pill-late { background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(232,225,218,.70)); border-color: rgba(138,129,122,.28); color: #514943; }
+        .time-pill-gray { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(232,225,218,.68)); border-color: rgba(138,129,122,.24); color: #6E655D; }
 
 
         /* v12：底部玻璃導覽列 */
@@ -75,11 +92,11 @@
             width: 100%;
             max-width: 28rem;
             padding: 9px 14px calc(9px + env(safe-area-inset-bottom));
-            background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(248,250,252,.94));
+            background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(250,249,246,.95));
             -webkit-backdrop-filter: blur(24px) saturate(165%);
             backdrop-filter: blur(24px) saturate(165%);
             border-top: 1px solid rgba(255,255,255,.95);
-            box-shadow: 0 -12px 34px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.96);
+            box-shadow: 0 -12px 34px rgba(74,57,46,.10), inset 0 1px 0 rgba(255,255,255,.96);
             z-index: 50;
         }
         .bottom-nav-inner {
@@ -97,7 +114,7 @@
             justify-content: center;
             gap: 4px;
             border-radius: 18px;
-            color: #94A3B8;
+            color: #A79C93;
             transition: transform .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease;
         }
         .nav-button:active { transform: scale(.94); }
@@ -109,7 +126,7 @@
             justify-content: center;
             border: 1px solid rgba(255,255,255,.88);
             border-radius: 13px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 4px 12px rgba(15,23,42,.05);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 4px 12px rgba(74,57,46,.05);
             transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
         }
         .nav-button i { font-size: 17px; }
@@ -121,26 +138,26 @@
             white-space: nowrap;
         }
         .nav-calendar .nav-icon-wrap {
-            color: #3B82F6;
-            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(219,234,254,.78));
+            color: #A9866F;
+            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(241,232,224,.85));
         }
         .nav-daily .nav-icon-wrap {
-            color: #D97706;
-            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(254,243,199,.82));
+            color: #A48347;
+            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(244,234,218,.9));
         }
         .nav-leave .nav-icon-wrap {
-            color: #8B5CF6;
-            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(237,233,254,.82));
+            color: #B0715F;
+            background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(241,223,216,.85));
         }
         .nav-button.active {
-            color: #172033;
+            color: #2A2522;
             background: rgba(255,255,255,.72);
-            box-shadow: 0 8px 22px rgba(15,23,42,.09), inset 0 1px 0 rgba(255,255,255,.96);
+            box-shadow: 0 8px 22px rgba(74,57,46,.09), inset 0 1px 0 rgba(255,255,255,.96);
             transform: translateY(-2px);
         }
         .nav-button.active .nav-icon-wrap {
             transform: translateY(-2px) scale(1.08);
-            box-shadow: 0 8px 18px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,1);
+            box-shadow: 0 8px 18px rgba(74,57,46,.12), inset 0 1px 0 rgba(255,255,255,1);
         }
         .nav-button.active::after {
             content: '';
@@ -149,8 +166,8 @@
             width: 18px;
             height: 3px;
             border-radius: 999px;
-            background: linear-gradient(90deg, rgba(245,193,68,.28), #F5C144, rgba(245,193,68,.28));
-            box-shadow: 0 0 10px rgba(245,193,68,.34);
+            background: linear-gradient(90deg, rgba(193,166,125,.28), #C1A67D, rgba(193,166,125,.28));
+            box-shadow: 0 0 10px rgba(193,166,125,.34);
         }
 
 
@@ -158,9 +175,9 @@
         @keyframes softFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
         @keyframes gentlePop { 0% { transform: scale(.94); opacity: .72; } 70% { transform: scale(1.035); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes cardRise { from { opacity: 0; transform: translateY(12px) scale(.985); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
-        @keyframes selectedBreath { 0%, 100% { box-shadow: 0 8px 18px rgba(15, 23, 42, .16); } 50% { box-shadow: 0 10px 24px rgba(245, 193, 68, .28); } }
+        @keyframes selectedBreath { 0%, 100% { box-shadow: 0 8px 18px rgba(74, 57, 46, .16); } 50% { box-shadow: 0 10px 24px rgba(193, 166, 125, .28); } }
         @keyframes todayNudge { 0%, 100% { transform: translateY(0); } 42% { transform: translateY(-2px) rotate(-1deg); } 68% { transform: translateY(0) rotate(1deg); } }
-        @keyframes weatherSunny { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(245,193,68,0)); } 50% { transform: scale(1.12) rotate(6deg); filter: drop-shadow(0 0 10px rgba(245,193,68,.38)); } }
+        @keyframes weatherSunny { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(193,166,125,0)); } 50% { transform: scale(1.12) rotate(6deg); filter: drop-shadow(0 0 10px rgba(193,166,125,.38)); } }
         @keyframes weatherRain { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
         @keyframes weatherCloud { 0%,100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         @keyframes weatherBolt { 0%, 55%, 100% { transform: scale(1); filter: brightness(1); } 12% { transform: scale(1.18) rotate(-7deg); filter: brightness(1.45); } 24% { transform: scale(.98) rotate(5deg); filter: brightness(1); } }
@@ -176,9 +193,9 @@
             height: 230px;
             pointer-events: none;
             background:
-                radial-gradient(circle at 22% 28%, rgba(125, 211, 252, .28), transparent 33%),
-                radial-gradient(circle at 72% 18%, rgba(196, 181, 253, .24), transparent 34%),
-                radial-gradient(circle at 54% 82%, rgba(253, 230, 138, .26), transparent 36%);
+                radial-gradient(circle at 22% 28%, rgba(193, 166, 125, .22), transparent 33%),
+                radial-gradient(circle at 72% 18%, rgba(169, 134, 111, .14), transparent 34%),
+                radial-gradient(circle at 54% 82%, rgba(234, 219, 192, .3), transparent 36%);
             filter: blur(18px);
             opacity: .78;
             z-index: 0;
@@ -231,7 +248,7 @@
             border-radius: 14px;
             transition: background .18s ease, transform .18s ease;
         }
-        .staff-row:active { transform: scale(.985); background: rgba(248,250,252,.72); }
+        .staff-row:active { transform: scale(.985); background: rgba(250,249,246,.72); }
         #daily-shift-cards > .glass-card {
             position: relative;
             overflow: hidden;
@@ -242,7 +259,7 @@
             right: 18px;
             top: 12px;
             font-size: 12px;
-            color: rgba(245, 193, 68, .72);
+            color: rgba(193, 166, 125, .72);
             animation: tinySparkle 2.8s ease-in-out infinite;
         }
         #date-slider > div {
@@ -264,7 +281,7 @@
             position: absolute;
             right: 18px;
             top: 17px;
-            color: rgba(139, 92, 246, .26);
+            color: rgba(193, 166, 125, .45);
             font-size: 18px;
             animation: tinySparkle 3.4s ease-in-out infinite;
         }
@@ -484,7 +501,7 @@
         }
         body {
             min-height: 100dvh !important;
-            background: #F4F6F8 !important;
+            background: #FAF9F6 !important;
             overscroll-behavior-x: none;
         }
         .app-shell {
@@ -503,10 +520,10 @@
             padding-top: 16px !important;
             padding-top: calc(16px + var(--safe-top)) !important;
             padding-bottom: .7rem !important;
-            background: linear-gradient(180deg, rgba(244,246,248,.98), rgba(244,246,248,.92)) !important;
+            background: linear-gradient(180deg, rgba(250,249,246,.98), rgba(250,249,246,.92)) !important;
             -webkit-backdrop-filter: blur(18px) saturate(145%);
             backdrop-filter: blur(18px) saturate(145%);
-            border-bottom: 1px solid rgba(226,232,240,.46);
+            border-bottom: 1px solid rgba(232,225,218,.46);
         }
         .top-row {
             align-items: flex-start !important;
@@ -555,7 +572,7 @@
             bottom: auto !important;
             z-index: 1 !important;
             margin: .25rem auto calc(1rem + var(--safe-bottom)) !important;
-            color: rgba(100,116,139,.62) !important;
+            color: rgba(138,129,122,.62) !important;
             pointer-events: none;
         }
         .bottom-nav-shell {
@@ -588,7 +605,7 @@
         body {
             display: block !important;
             min-height: 100dvh !important;
-            background: #F4F6F8 !important;
+            background: #FAF9F6 !important;
         }
         .app-shell {
             width: min(100svw, 28rem) !important;
@@ -736,88 +753,140 @@
         }
 
     
-        /* ===== 我的班表 ===== */
+        /* ===== 我的班表（淺色，與「今日上班穿搭」同系列）===== */
         .my-card {
-            background: linear-gradient(145deg, #1A1D20 0%, #2A2F35 100%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #FBF7F0 55%, #F6EEE2 100%);
+            border: 1px solid #EADFCF;
             border-radius: 1.5rem;
-            padding: 1rem 1rem 0.9rem;
-            color: #fff;
-            box-shadow: 0 10px 24px -14px rgba(26, 29, 32, .55);
+            padding: 1rem 1rem .9rem;
+            color: #2A2522;
+            box-shadow: 0 8px 22px -16px rgba(169, 134, 111, .35);
         }
-        .my-eyebrow { font-size: 11px; font-weight: 900; letter-spacing: .08em; color: #F5C144; }
+        .my-eyebrow { font-size: 11px; font-weight: 900; letter-spacing: .08em; color: #A48347; }
         .my-link {
-            font-size: 11px; font-weight: 800; color: rgba(255,255,255,.7);
-            border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 3px 10px;
+            font-size: 11px; font-weight: 800; color: #8A817A; background: #fff;
+            border: 1px solid #E8E1DA; border-radius: 999px; padding: 3px 10px;
         }
         .my-link:active { transform: scale(.95); }
-        .my-status { margin-top: .55rem; font-size: 1.05rem; font-weight: 900; line-height: 1.4; display: flex; align-items: center; flex-wrap: wrap; gap: .15rem; }
-        .my-sub { font-size: .75rem; font-weight: 700; color: rgba(255,255,255,.6); }
-        .my-live-dot { width: .55rem; height: .55rem; border-radius: 999px; background: #34D399; margin-right: .4rem; box-shadow: 0 0 0 4px rgba(52,211,153,.25); }
+        .my-status { margin-top: .55rem; font-size: 1.05rem; font-weight: 900; line-height: 1.4; display: flex; align-items: center; flex-wrap: wrap; gap: .15rem; color: #2A2522; }
+        .my-sub { font-size: .75rem; font-weight: 700; color: #8A817A; }
+        .my-live-dot { width: .55rem; height: .55rem; border-radius: 999px; background: #7E9C7A; margin-right: .4rem; box-shadow: 0 0 0 4px rgba(126,156,122,.2); }
         .my-row { display: flex; align-items: center; gap: .6rem; text-align: left; width: 100%; }
         .my-row-button { border-radius: .75rem; }
         .my-row-button:active { transform: scale(.98); }
-        .my-row-label { flex-shrink: 0; font-size: 10px; font-weight: 900; color: rgba(255,255,255,.45); width: 1.8rem; }
-        .my-pill { font-size: 11px; font-weight: 900; border-radius: .6rem; padding: 3px 8px; white-space: nowrap; }
-        .my-pill-早 { background: #FEF3C7; color: #B45309; }
-        .my-pill-午 { background: #D1FAE5; color: #047857; }
-        .my-pill-晚 { background: #E0E7FF; color: #4338CA; }
+        .my-row-label { flex-shrink: 0; font-size: 10px; font-weight: 900; color: #A79C93; width: 1.8rem; }
+        .my-pill { font-size: 11px; font-weight: 900; border-radius: .6rem; padding: 3px 8px; white-space: nowrap; border: 1px solid transparent; }
+        .my-pill-早 { background: #F6ECDA; color: #A48347; border-color: #EADBC0; }
+        .my-pill-午 { background: #E6EEE3; color: #5E7F5A; border-color: #CFDDC9; }
+        .my-pill-晚 { background: #F1E8E0; color: #7A5E4C; border-color: #E2D3C6; }
         .my-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .3rem; margin-top: .85rem; }
         .my-week-day {
             display: flex; flex-direction: column; align-items: center; gap: 2px;
-            background: rgba(255,255,255,.06); border: 1.5px solid transparent; border-radius: .8rem;
+            background: rgba(255,255,255,.85); border: 1.5px solid #F1ECE6; border-radius: .8rem;
             padding: .4rem 0 .45rem; min-width: 0;
         }
         .my-week-day:active { transform: scale(.94); }
-        .my-week-day.is-today { border-color: #F5C144; background: rgba(245,193,68,.14); }
+        .my-week-day.is-today { border-color: #C1A67D; background: #F8F1E6; box-shadow: 0 4px 10px -6px rgba(193,166,125,.8); }
         .my-week-day.is-past { opacity: .45; }
-        .my-week-wd { font-size: 9px; font-weight: 800; color: rgba(255,255,255,.5); }
-        .my-week-date { font-size: .85rem; font-weight: 900; line-height: 1.1; }
+        .my-week-wd { font-size: 9px; font-weight: 800; color: #A79C93; }
+        .my-week-date { font-size: .85rem; font-weight: 900; line-height: 1.1; color: #2A2522; }
         .my-week-tags { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 1.1rem; }
-        .my-week-tag { font-size: 9px; font-weight: 900; border-radius: .35rem; padding: 0 5px; line-height: 1.5; }
-        .my-week-off { font-size: 9px; font-weight: 800; color: rgba(255,255,255,.4); line-height: 1.5; }
+        .my-week-tag { font-size: 9px; font-weight: 900; border-radius: .35rem; padding: 0 5px; line-height: 1.5; border: none; }
+        .my-week-off { font-size: 9px; font-weight: 800; color: #D6CCC3; line-height: 1.5; }
         .my-stats {
             display: flex; flex-wrap: wrap; gap: .35rem .9rem; margin-top: .8rem; padding-top: .7rem;
-            border-top: 1px solid rgba(255,255,255,.1); font-size: 11px; font-weight: 700; color: rgba(255,255,255,.6);
+            border-top: 1px solid #EADFCF; font-size: 11px; font-weight: 700; color: #8A817A;
         }
-        .my-stats b { color: #F5C144; font-weight: 900; }
+        .my-stats b { color: #A48347; font-weight: 900; }
         .my-name-chip {
-            font-size: .85rem; font-weight: 900; color: #1A1D20; background: #fff;
-            border-radius: .8rem; padding: .45rem .9rem; border: 2px solid transparent;
+            font-size: .85rem; font-weight: 900; color: #2A2522; background: #fff;
+            border-radius: .8rem; padding: .45rem .9rem; border: 1.5px solid #E8E1DA;
+            box-shadow: 0 2px 6px -4px rgba(74,57,46,.25);
         }
-        .my-name-chip.is-current { border-color: #F5C144; }
+        .my-name-chip.is-current { border-color: #C1A67D; background: #F8F1E6; }
         .my-name-chip:active { transform: scale(.94); }
         .me-row {
-            background: linear-gradient(90deg, rgba(245,193,68,.22), rgba(245,193,68,.04));
+            background: linear-gradient(90deg, rgba(193,166,125,.22), rgba(193,166,125,.04));
             border-radius: .75rem;
-            box-shadow: inset 3px 0 0 #F5C144;
+            box-shadow: inset 3px 0 0 #C1A67D;
         }
         .me-badge {
-            display: inline-flex; align-items: center; font-size: 9px; font-weight: 900; color: #1A1D20;
-            background: #F5C144; border-radius: 999px; padding: 1px 6px; line-height: 1.4;
+            display: inline-flex; align-items: center; font-size: 9px; font-weight: 900; color: #2A2522;
+            background: #C1A67D; border-radius: 999px; padding: 1px 6px; line-height: 1.4;
         }
+
+        /* ===== 班表變動提醒 ===== */
+        .upd-card {
+            background: #FBF7F0; border: 1px solid #E3D2B4; border-radius: 1.25rem;
+            padding: .85rem .9rem .75rem; box-shadow: 0 6px 18px -12px rgba(169, 134, 111, .45);
+        }
+        .upd-block + .upd-block { margin-top: .7rem; padding-top: .7rem; border-top: 1px dashed #E3D2B4; }
+        .upd-title { font-size: .95rem; font-weight: 900; color: #2A2522; }
+        .upd-when { font-size: .7rem; font-weight: 700; color: #A48347; }
+        .upd-sub { margin-top: .45rem; font-size: 11px; font-weight: 800; color: #8A6B3A; }
+        .upd-sub-mine { color: #B0715F; }
+        .upd-item {
+            display: flex; gap: .5rem; width: 100%; text-align: left; margin-top: .3rem;
+            background: #fff; border: 1px solid #EADBC0; border-radius: .7rem; padding: .4rem .6rem;
+            font-size: 12px; font-weight: 700; color: #514943; line-height: 1.45;
+        }
+        .upd-item:active { transform: scale(.98); }
+        .upd-item b { color: #2A2522; font-weight: 900; }
+        .upd-date { flex-shrink: 0; font-weight: 900; color: #A48347; min-width: 2.6rem; }
+        .upd-link, .upd-action { margin-top: .45rem; font-size: 11px; font-weight: 900; color: #A48347; text-decoration: underline; text-underline-offset: 3px; }
+        .upd-dismiss {
+            display: block; width: 100%; margin-top: .75rem; padding: .5rem; border-radius: .8rem;
+            background: #2A2522; color: #C1A67D; font-size: .8rem; font-weight: 900;
+        }
+        .upd-dismiss:active { transform: scale(.98); }
+        .my-cal-btn {
+            display: flex; align-items: center; justify-content: center; gap: .4rem; width: 100%;
+            margin-top: .75rem; padding: .55rem; border-radius: .9rem;
+            background: #fff; border: 1px solid #EADBC0;
+            color: #A48347; font-size: .8rem; font-weight: 900;
+        }
+        .my-cal-btn:active { transform: scale(.98); }
+
+        /* ===== 大北門讚診所主視覺 ===== */
+        body { color: #2A2522; background: #FAF9F6; }
+        .brand-title .brand-main { color: #2A2522; letter-spacing: .12em; font-weight: 900; }
+        .brand-title .brand-tech {
+            font-family: 'Cinzel', 'Noto Sans TC', serif; font-weight: 700; color: #A9866F; letter-spacing: .02em;
+        }
+        .top-shell::after {
+            content: ''; display: block; height: 1px; margin-top: .75rem;
+            background: linear-gradient(90deg, transparent, rgba(193,166,125,.55) 20%, rgba(193,166,125,.55) 80%, transparent);
+        }
+        #global-month { box-shadow: 0 6px 14px -8px rgba(122, 94, 76, .7); letter-spacing: .08em; }
+        .month-picker i { color: #fff !important; }
+        #weather-widget { border-color: #EFE7DE !important; }
+        #weather-advice { background: linear-gradient(110deg, #FFFFFF, #FBF7F0 60%, #F6EEE2) !important; border-color: #EFE4D3 !important; }
+        #date-slider > div.shadow-md { box-shadow: 0 8px 18px -8px rgba(122, 94, 76, .75) !important; }
+        h2 { color: #514943 !important; letter-spacing: .06em; }
+        #app-footer { font-family: 'Cinzel', 'Noto Sans TC', serif; letter-spacing: .08em; color: #B4A79C; }
     </style>
 </head>
-<body class="bg-[#F4F6F8] min-h-screen">
+<body class="bg-[#FAF9F6] min-h-screen">
 
-    <div class="app-shell w-full max-w-md bg-[#F4F6F8] shadow-xl flex flex-col relative pb-28 min-h-screen">
+    <div class="app-shell w-full max-w-md bg-[#FAF9F6] shadow-xl flex flex-col relative pb-28 min-h-screen">
         
         <!-- ================= 全域頂部導覽列 ================= -->
-        <div class="top-shell px-5 pt-5 pb-2 sticky top-0 z-40 bg-[#F4F6F8]">
+        <div class="top-shell px-5 pt-5 pb-2 sticky top-0 z-40 bg-[#FAF9F6]">
             <div class="top-row flex justify-between items-center gap-3">
-                <h1 class="brand-title min-w-0 font-black leading-tight text-[#1A1D20]" aria-label="大北門讚 SmartShift">
+                <h1 class="brand-title min-w-0 font-black leading-tight text-[#2A2522]" aria-label="大北門讚 SmartShift">
                     <span class="brand-main">大北門讚</span>
                     <span class="brand-tech whitespace-nowrap">SmartShift</span>
                 </h1>
                 <div class="month-picker relative shrink-0 active:scale-95 transition-transform duration-100">
-                    <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#1A1D20] text-[#F5C144] border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
+                    <select id="global-month" onchange="switchMonth(this.value)" class="appearance-none bg-[#A9866F] text-white border-none text-sm font-bold py-1.5 pl-3 pr-8 rounded-lg shadow-sm focus:outline-none cursor-pointer tracking-wider">
                     </select>
-                    <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[#F5C144] text-xs pointer-events-none"></i>
+                    <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-white text-xs pointer-events-none"></i>
                 </div>
             </div>
 
             <!-- 氣象小工具：獨立置中，保留完整地區名稱 -->
             <div class="weather-center mt-3 flex justify-center">
-                <div id="weather-widget" class="flex w-full max-w-[300px] items-center justify-center gap-2 overflow-hidden bg-white border border-[#E2E8F0] text-gray-600 px-4 py-2 rounded-2xl text-sm font-bold shadow-sm transition-all duration-300" title="診所所在地即時天氣">
+                <div id="weather-widget" class="flex w-full max-w-[300px] items-center justify-center gap-2 overflow-hidden bg-white border border-[#E8E1DA] text-gray-600 px-4 py-2 rounded-2xl text-sm font-bold shadow-sm transition-all duration-300" title="診所所在地即時天氣">
                     <i class="fa-solid fa-spinner fa-spin text-gray-400"></i>
                     <span class="text-xs truncate">讀取天氣</span>
                 </div>
@@ -830,7 +899,7 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[10px] font-black tracking-[0.12em] text-sky-500">今日上班穿搭</p>
-                    <p id="weather-advice-text" class="mt-0.5 text-xs font-bold leading-relaxed text-[#334155]">正在依照所在地天氣整理通勤建議…</p>
+                    <p id="weather-advice-text" class="mt-0.5 text-xs font-bold leading-relaxed text-[#514943]">正在依照所在地天氣整理通勤建議…</p>
                 </div>
             </div>
         </div>
@@ -838,9 +907,10 @@
         <!-- ================= 頁面 1：單日排班 ================= -->
         <div id="page-daily" class="flex flex-col flex-1 p-5 pt-2">
             <!-- 我的班表（記住「我是誰」，存在這支手機上） -->
+            <div id="update-banner" class="mb-3"></div>
             <div id="my-shift-card" class="mb-4"></div>
             <div class="flex justify-between items-center gap-3 mb-4">
-                <p id="daily-title-date" class="text-lg font-bold text-[#1A1D20] min-w-0">-</p>
+                <p id="daily-title-date" class="text-lg font-bold text-[#2A2522] min-w-0">-</p>
                 <div class="flex items-center gap-2 shrink-0">
                     <span class="hidden sm:inline-flex text-xs font-bold bg-white text-gray-500 px-2 py-1 rounded shadow-sm">單日檢視</span>
                     <button type="button" id="go-today-button" onclick="goToToday()" class="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-gradient-to-r from-white to-amber-50 px-3 py-2 text-xs font-black text-amber-700 shadow-sm transition active:scale-95 disabled:cursor-default disabled:opacity-60" aria-label="回到今天日期">
@@ -857,7 +927,7 @@
             <div class="flex-1 overflow-y-auto no-scrollbar">
                 <div id="public-holiday-card" class="hidden bg-gradient-to-br from-rose-50 via-white to-amber-50 border border-rose-100 rounded-3xl p-6 shadow-sm text-center animate-fade-in">
                     <div class="holiday-mascot text-5xl mb-3">🐣</div>
-                    <p class="text-xl font-black text-[#1A1D20]">星期日公休</p>
+                    <p id="public-holiday-title" class="text-xl font-black text-[#2A2522]">星期日公休</p>
                     <p class="text-sm font-bold text-rose-400 mt-1">今天安心充電，明天再一起開工 ✨</p>
                     <div class="mt-4 inline-flex items-center gap-2 bg-white/90 border border-rose-100 text-rose-500 px-3 py-1.5 rounded-full text-xs font-black shadow-sm">
                         <i class="fa-solid fa-mug-hot"></i>
@@ -868,28 +938,28 @@
                 <div id="daily-shift-cards" class="flex flex-col gap-4">
                     <div class="glass-card glass-card-morning rounded-2xl p-4">
                         <div class="flex justify-between items-center mb-3 gap-2">
-                            <span id="morning-shift-title" class="text-sm font-bold text-[#1A1D20]">☀️ 早班同仁</span>
+                            <span id="morning-shift-title" class="text-sm font-bold text-[#2A2522]">☀️ 早班同仁</span>
                             <span id="morning-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 shrink-0">-</span>
                         </div>
-                        <hr class="border-[#EDF2F7] mb-2">
+                        <hr class="border-[#F1ECE6] mb-2">
                         <div id="morning-staff-list" class="flex flex-col gap-2"></div>
                     </div>
 
                     <div id="mid-shift-card" class="glass-card glass-card-mid rounded-2xl p-4 hidden">
                         <div class="flex justify-between items-center mb-3 gap-2">
-                            <span id="mid-shift-title" class="text-sm font-bold text-[#1A1D20]">🍵 午班同仁 (13:30 - 17:00)</span>
+                            <span id="mid-shift-title" class="text-sm font-bold text-[#2A2522]">🍵 午班同仁 (13:30 - 17:00)</span>
                             <span id="mid-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 shrink-0">-</span>
                         </div>
-                        <hr class="border-[#EDF2F7] mb-2">
+                        <hr class="border-[#F1ECE6] mb-2">
                         <div id="mid-staff-list" class="flex flex-col gap-2"></div>
                     </div>
                     
                     <div class="glass-card glass-card-evening rounded-2xl p-4">
                         <div class="flex justify-between items-center mb-3 gap-2">
-                            <span id="evening-shift-title" class="text-sm font-bold text-[#1A1D20]">🌙 晚班同仁</span>
+                            <span id="evening-shift-title" class="text-sm font-bold text-[#2A2522]">🌙 晚班同仁</span>
                             <span id="evening-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 shrink-0">-</span>
                         </div>
-                        <hr class="border-[#EDF2F7] mb-2">
+                        <hr class="border-[#F1ECE6] mb-2">
                         <div id="evening-staff-list" class="flex flex-col gap-2"></div>
                     </div>
                 </div>
@@ -900,18 +970,18 @@
         <div id="page-calendar" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <p class="text-lg font-bold text-[#1A1D20]" id="calendar-title-month">-月 班表日曆</p>
+                    <p class="text-lg font-bold text-[#2A2522]" id="calendar-title-month">-月 班表日曆</p>
                     <p class="text-[10px] text-gray-400 mt-0.5">點擊日期查看當日名單</p>
                 </div>
                 <div class="relative active:scale-95 transition-transform duration-100">
-                    <select id="employee-filter" onchange="filterEmployee(this.value)" class="appearance-none bg-white border border-[#E2E8F0] text-[#1A1D20] text-xs font-bold py-1.5 pl-2.5 pr-7 rounded-md shadow-sm focus:outline-none cursor-pointer">
+                    <select id="employee-filter" onchange="filterEmployee(this.value)" class="appearance-none bg-white border border-[#E8E1DA] text-[#2A2522] text-xs font-bold py-1.5 pl-2.5 pr-7 rounded-md shadow-sm focus:outline-none cursor-pointer">
                         <option value="all">所有人員</option>
                     </select>
-                    <i class="fa-solid fa-filter absolute right-2 top-1/2 -translate-y-1/2 text-[#1A1D20] text-[10px] pointer-events-none"></i>
+                    <i class="fa-solid fa-filter absolute right-2 top-1/2 -translate-y-1/2 text-[#2A2522] text-[10px] pointer-events-none"></i>
                 </div>
             </div>
             
-            <div class="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm mb-4">
+            <div class="bg-white rounded-2xl border border-[#E8E1DA] p-4 shadow-sm mb-4">
                 <div class="grid grid-cols-7 gap-1 text-center mb-3">
                     <div class="text-[11px] font-bold text-gray-400">一</div>
                     <div class="text-[11px] font-bold text-gray-400">二</div>
@@ -930,7 +1000,7 @@
         <!-- ================= 頁面 3：休假總覽 ================= -->
         <div id="page-summary" class="hidden flex flex-col flex-1 p-5 pt-2">
             <div class="mb-4">
-                <p class="text-lg font-bold text-[#1A1D20]" id="summary-title-month">-月 休假總覽</p>
+                <p class="text-lg font-bold text-[#2A2522]" id="summary-title-month">-月 休假總覽</p>
             </div>
             <div id="employee-summary-list" class="flex flex-col gap-3 flex-1 overflow-y-auto no-scrollbar"></div>
         </div>
@@ -960,9 +1030,9 @@
 
     </div>
 
-    <script src="shift-data.js?v=2026-11-23-v18.11"></script>
+    <script src="shift-data.js?v=2026-11-23-v18.12"></script>
     <script>
-        const APP_VERSION = "2026-11-23-v18.11";
+        const APP_VERSION = "2026-11-23-v18.12";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
 
@@ -1009,6 +1079,18 @@
 
         function isSaturday(month, day) {
             return getWeekdayIndex(month, day) === 5;
+        }
+
+        // 公休：星期日，或當天整天沒有任何人排班（例如國定假日、診所休診）
+        function isClosedDay(month, day) {
+            if (isSunday(month, day)) return true;
+            const sd = appData[month]?.shifts?.[day];
+            if (!sd) return true;
+            return !["早班", "午班", "晚班"].some(type => (sd[type] || []).length > 0);
+        }
+
+        function closedDayLabel(month, day) {
+            return isSunday(month, day) ? "星期日公休" : "本日公休";
         }
 
         function isSunday(month, day) {
@@ -1189,7 +1271,7 @@
             const eveningTag = document.getElementById("evening-status-tag");
             if (!morningTag || !midTag || !eveningTag) return;
 
-            if (isSunday(currentMonth, day)) {
+            if (isClosedDay(currentMonth, day)) {
                 [morningTag, midTag, eveningTag].forEach(tag => setTag(tag, "💤 公休中", "bg-rose-50 text-rose-500"));
                 return;
             }
@@ -1258,15 +1340,15 @@
         function getToneStyle(tone) {
             const styles = {
                 purple: { dot: "bg-violet-500", badge: "time-pill-purple" },
-                red: { dot: "bg-red-500", badge: "time-pill-red" },
+                red: { dot: "bg-[#B0715F]", badge: "time-pill-red" },
                 yellow: { dot: "bg-yellow-400", badge: "time-pill-yellow" },
                 orange: { dot: "bg-orange-500", badge: "time-pill-orange" },
                 black: { dot: "bg-slate-500", badge: "time-pill-late" },
-                green: { dot: "bg-emerald-500", badge: "time-pill-green" },
+                green: { dot: "bg-[#A9866F]", badge: "time-pill-green" },
                 blue: { dot: "bg-blue-500", badge: "time-pill-blue" },
                 gray: { dot: "bg-gray-400", badge: "time-pill-gray" },
-                morning: { dot: "bg-amber-400", badge: "time-pill-morning" },
-                mid: { dot: "bg-emerald-400", badge: "time-pill-mid" }
+                morning: { dot: "bg-[#C1A67D]", badge: "time-pill-morning" },
+                mid: { dot: "bg-[#7E9C7A]", badge: "time-pill-mid" }
             };
             return styles[tone] || styles.black;
         }
@@ -1288,7 +1370,7 @@
                 <div class="staff-row reveal-pop flex items-center justify-between gap-3 text-sm min-h-[30px] px-1 py-0.5${meRow}">
                     <div class="flex items-center min-w-0 flex-wrap gap-y-1">
                         <span class="w-2 h-2 rounded-full ${style.dot} mr-2 shrink-0"></span>
-                        <span class="font-bold text-[#2D3748] shrink-0">${escapeHtml(person.name)}</span>${meBadge}
+                        <span class="font-bold text-[#3A332E] shrink-0">${escapeHtml(person.name)}</span>${meBadge}
                         ${holidayBadge}
                         ${supportBadge}
                     </div>
@@ -1307,7 +1389,7 @@
                 : "";
             const isMe = myName && person.name === myName;
             return `<div class="flex items-center justify-between gap-1.5 py-0.5${isMe ? " me-row px-1" : ""}">
-                <span class="text-xs font-bold text-[#2D3748] flex items-center gap-1 min-w-0 flex-wrap"><span class="w-1.5 h-1.5 rounded-full ${style.dot} shrink-0"></span>${escapeHtml(person.name)}${isMe ? ` <span class="me-badge">我</span>` : ""} ${holidayBadge} ${supportBadge}</span>
+                <span class="text-xs font-bold text-[#3A332E] flex items-center gap-1 min-w-0 flex-wrap"><span class="w-1.5 h-1.5 rounded-full ${style.dot} shrink-0"></span>${escapeHtml(person.name)}${isMe ? ` <span class="me-badge">我</span>` : ""} ${holidayBadge} ${supportBadge}</span>
                 <span class="time-pill text-[9px] font-black border rounded-lg px-1.5 py-1 whitespace-nowrap ${style.badge}">${escapeHtml(person.hours)}</span>
             </div>`;
         }
@@ -1447,6 +1529,7 @@
             try { localStorage.setItem(MY_NAME_KEY, name); } catch (error) {}
             currentEmployeeFilter = defaultEmployeeFilter();
             initEmployeeFilter();
+            renderUpdateBanner();
             renderMyShiftCard();
             renderDailyPage(currentSelectedDay);
         }
@@ -1511,8 +1594,8 @@
                     <div class="flex items-start justify-between gap-3">
                         <div>
                             <p class="my-eyebrow">我的班表</p>
-                            <p class="text-base font-black text-white mt-0.5">👋 你是哪一位？</p>
-                            <p class="text-[11px] font-bold text-white/60 mt-1">選一次就會記住，之後打開直接看到自己的班</p>
+                            <p class="text-base font-black text-[#2A2522] mt-0.5">👋 你是哪一位？</p>
+                            <p class="text-[11px] font-bold text-slate-500 mt-1">選一次就會記住，之後打開直接看到自己的班</p>
                         </div>
                         ${myName ? `<button type="button" onclick="openMyPicker(false)" class="my-link shrink-0">取消</button>` : ""}
                     </div>
@@ -1542,7 +1625,7 @@
                 statusHtml = `<p class="my-status">📭 今天的班表還沒上傳</p>`;
                 todayHtml = "";
             } else if (todayShifts.length === 0) {
-                statusHtml = `<p class="my-status">${today.getDay() === 0 ? "🌼 今天公休，好好休息" : "🌴 今天休假，好好休息"}</p>`;
+                statusHtml = `<p class="my-status">${isClosedDay(today.getMonth() + 1, today.getDate()) ? "🌼 今天公休，好好休息" : "🌴 今天休假，好好休息"}</p>`;
                 todayHtml = "";
             } else {
                 const current = todayShifts.find(s => nowMinutes >= s.start && nowMinutes < s.end);
@@ -1558,7 +1641,7 @@
             }
 
             // 下次上班（明天以後第一個有班的日子）
-            let nextHtml = `<div class="my-row"><span class="my-row-label">下次</span><span class="text-xs font-bold text-white/60">還沒排到，等下個月班表</span></div>`;
+            let nextHtml = `<div class="my-row"><span class="my-row-label">下次</span><span class="text-xs font-bold text-slate-400">還沒排到，等下個月班表</span></div>`;
             for (let i = 1; i <= 62; i++) {
                 const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
                 const shifts = getMyShiftsOn(date);
@@ -1569,7 +1652,7 @@
                     const when = i === 1 ? "明天" : (i === 2 ? "後天" : `${m}/${d}`);
                     nextHtml = `<button type="button" onclick="jumpToDate(${m}, ${d})" class="my-row my-row-button">
                         <span class="my-row-label">下次</span>
-                        <div class="flex flex-wrap items-center gap-1.5"><span class="text-xs font-black text-white">${when}（${WEEKDAY_CHARS[date.getDay()]}）</span>${shiftPillsHtml(shifts)}</div>
+                        <div class="flex flex-wrap items-center gap-1.5"><span class="text-xs font-black text-[#2A2522]">${when}（${WEEKDAY_CHARS[date.getDay()]}）</span>${shiftPillsHtml(shifts)}</div>
                     </button>`;
                     break;
                 }
@@ -1623,7 +1706,112 @@
                     </div>
                     <div class="my-week">${weekHtml}</div>
                     ${statHtml}
+                    ${myCalendarUrl() ? `<a href="${myCalendarUrl()}" class="my-cal-btn"><i class="fa-regular fa-calendar-plus"></i>加到 iPhone 行事曆（自動同步）</a>` : ""}
                 </div>`;
+        }
+
+        // ===== 班表變動提醒（資料由 update_shift.py 比對 Excel 產生）=====
+        const SEEN_UPDATE_KEY = "dabeimen_seen_update";
+        const SHIFT_UPDATES = (window.SHIFT_DATA && window.SHIFT_DATA.updates) || [];
+        let updateBannerExpanded = false;
+
+        function getSeenUpdateId() {
+            try { return localStorage.getItem(SEEN_UPDATE_KEY) || ""; } catch (error) { return ""; }
+        }
+
+        function getUnseenUpdates() {
+            const seen = getSeenUpdateId();
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - 14);
+            return SHIFT_UPDATES.filter(u =>
+                u.id > seen && new Date(u.date) >= cutoff && appData[u.month] && yearOfMonth(u.month) === u.year
+            );
+        }
+
+        function dismissUpdates() {
+            if (navigator.vibrate) navigator.vibrate(30);
+            const latest = SHIFT_UPDATES.reduce((max, u) => (u.id > max ? u.id : max), "");
+            try { localStorage.setItem(SEEN_UPDATE_KEY, latest); } catch (error) {}
+            renderUpdateBanner();
+        }
+
+        function toggleUpdateBanner() {
+            if (navigator.vibrate) navigator.vibrate(30);
+            updateBannerExpanded = !updateBannerExpanded;
+            renderUpdateBanner();
+        }
+
+        function updateItemHtml(month, item, showName) {
+            return `<button type="button" onclick="jumpToDate(${month}, ${item.day})" class="upd-item">
+                <span class="upd-date">${month}/${item.day}</span>
+                <span class="min-w-0">${showName ? `<b>${escapeHtml(item.name)}</b>　` : ""}${escapeHtml(item.text)}</span>
+            </button>`;
+        }
+
+        function renderUpdateBanner() {
+            const container = document.getElementById("update-banner");
+            if (!container) return;
+            const unseen = getUnseenUpdates();
+            if (!unseen.length) { container.innerHTML = ""; return; }
+
+            const blocks = [];
+            // 同一個月多次更新：合併成一個區塊（取最新那次的說法，項目全部列出）
+            const byMonth = new Map();
+            unseen.forEach(u => {
+                const key = `${u.year}-${u.month}`;
+                if (!byMonth.has(key)) byMonth.set(key, { month: u.month, isNew: false, date: u.date, items: [] });
+                const entry = byMonth.get(key);
+                if (u.kind === "new") entry.isNew = true;
+                entry.date = u.date;
+                entry.items.push(...(u.items || []));
+            });
+
+            byMonth.forEach(entry => {
+                const [, mm, dd] = entry.date.split("-").map(Number);
+                if (entry.isNew && !entry.items.length) {
+                    blocks.push(`
+                        <div class="upd-block">
+                            <p class="upd-title">🎉 ${entry.month}月班表上線了</p>
+                            <button type="button" onclick="jumpToDate(${entry.month}, 1)" class="upd-action">去看 ${entry.month}月</button>
+                        </div>`);
+                    return;
+                }
+                const mine = myName ? entry.items.filter(i => i.name === myName) : [];
+                const others = entry.items;
+                let body = "";
+                if (myName) {
+                    body += mine.length
+                        ? `<p class="upd-sub upd-sub-mine">你的班有 ${mine.length} 處變動：</p>${mine.map(i => updateItemHtml(entry.month, i, false)).join("")}`
+                        : `<p class="upd-sub">你的班沒有變動 👍</p>`;
+                }
+                const showAll = !myName || updateBannerExpanded;
+                if (showAll) {
+                    body += `<p class="upd-sub">${myName ? "全部變動" : `共 ${others.length} 處變動`}：</p>${others.map(i => updateItemHtml(entry.month, i, true)).join("")}`;
+                }
+                const toggle = myName
+                    ? `<button type="button" onclick="toggleUpdateBanner()" class="upd-link">${updateBannerExpanded ? "收起" : `看全部 ${others.length} 處`}</button>`
+                    : "";
+                blocks.push(`
+                    <div class="upd-block">
+                        <p class="upd-title">📢 ${entry.month}月班表有更新<span class="upd-when">（${mm}/${dd}）</span></p>
+                        ${body}
+                        ${toggle}
+                    </div>`);
+            });
+
+            container.innerHTML = `
+                <div class="upd-card">
+                    ${blocks.join("")}
+                    <button type="button" onclick="dismissUpdates()" class="upd-dismiss">知道了</button>
+                </div>`;
+        }
+
+        function myCalendarUrl() {
+            const rel = window.SHIFT_DATA?.calendars?.[myName];
+            if (!rel) return "";
+            const url = new URL(rel, window.location.href);
+            url.search = "";
+            return url.href.replace(/^https?:/, "webcal:");
         }
 
         function renderDailyPage(day) {
@@ -1637,14 +1825,14 @@
 
             for (let i = 1; i <= daysInMonth; i++) {
                 const isSelected = i === day;
-                const sunday = isSunday(currentMonth, i);
+                const sunday = isClosedDay(currentMonth, i);
                 const div = document.createElement("div");
                 const normalStyle = sunday
                     ? "bg-rose-50 border-rose-100 text-rose-500"
-                    : "bg-white border-[#E2E8F0] text-[#2D3748]";
+                    : "bg-white border-[#E8E1DA] text-[#3A332E]";
                 const selectedStyle = sunday
                     ? "bg-rose-500 border-rose-500 text-white shadow-md"
-                    : "bg-[#1A1D20] border-[#1A1D20] text-white shadow-md";
+                    : "bg-[#A9866F] border-[#A9866F] text-white shadow-md";
                 div.className = `flex flex-col items-center justify-center min-w-[55px] h-[55px] rounded-xl border cursor-pointer transition-transform duration-100 active:scale-90 ${isSelected ? selectedStyle : normalStyle}`;
 
                 div.onclick = () => {
@@ -1652,7 +1840,7 @@
                     renderDailyPage(i);
                 };
 
-                const dayColor = isSelected ? (sunday ? "text-white" : "text-[#F5C144]") : "";
+                const dayColor = isSelected ? (sunday ? "text-white" : "text-white") : "";
                 const weekdayColor = isSelected ? "text-white/75" : (sunday ? "text-rose-400" : "text-gray-400");
                 div.innerHTML = `<span class="text-base font-bold ${dayColor}">${i}</span><span class="text-[9px] ${weekdayColor} font-bold">${getWeekdayString(currentMonth, i)}</span>`;
                 slider.appendChild(div);
@@ -1665,8 +1853,9 @@
 
             const holidayCard = document.getElementById("public-holiday-card");
             const shiftCards = document.getElementById("daily-shift-cards");
-            if (isSunday(currentMonth, day)) {
+            if (isClosedDay(currentMonth, day)) {
                 holidayCard.classList.remove("hidden");
+                document.getElementById("public-holiday-title").innerText = closedDayLabel(currentMonth, day);
                 shiftCards.classList.add("hidden");
                 updateSmartStatus(day);
                 applyStaggerAnimation("#public-holiday-card .holiday-mascot", 0);
@@ -1723,7 +1912,7 @@
             for (let i = 1; i <= daysInMonth; i++) {
                 const shiftData = getShiftData(currentMonth, i);
                 const isSelected = i === calendarSelectedDay;
-                const sunday = isSunday(currentMonth, i);
+                const sunday = isClosedDay(currentMonth, i);
 
                 let hasEarly = false;
                 let hasMid = false;
@@ -1743,13 +1932,13 @@
                 if (isSelected) {
                     styleClass = sunday
                         ? "border-rose-500 bg-rose-500 text-white shadow-md"
-                        : "border-[#1A1D20] bg-[#1A1D20] text-white shadow-md";
+                        : "border-[#A9866F] bg-[#A9866F] text-white shadow-md";
                 } else if (sunday) {
                     styleClass = "border-rose-100 bg-rose-50 text-rose-500";
                 } else if (isFilteredWorking) {
-                    styleClass = "border-amber-400 bg-amber-50 text-[#2D3748]";
+                    styleClass = "border-amber-400 bg-amber-50 text-[#3A332E]";
                 } else {
-                    styleClass = "border-transparent bg-gray-50 text-[#2D3748] hover:border-gray-200";
+                    styleClass = "border-transparent bg-gray-50 text-[#3A332E] hover:border-gray-200";
                 }
 
                 const indicators = sunday
@@ -1796,11 +1985,11 @@
         function updateCalendarDetail(day) {
             const detailContainer = document.getElementById("calendar-detail-card");
 
-            if (isSunday(currentMonth, day)) {
+            if (isClosedDay(currentMonth, day)) {
                 detailContainer.innerHTML = `
                     <div class="calendar-detail-card bg-gradient-to-br from-rose-50 via-white to-amber-50 rounded-2xl border border-rose-100 p-5 shadow-sm text-center animate-fade-in">
                         <div class="holiday-mascot text-4xl mb-2">🌼</div>
-                        <p class="text-base font-black text-[#1A1D20]">${currentMonth}月${day}日・星期日公休</p>
+                        <p class="text-base font-black text-[#2A2522]">${currentMonth}月${day}日・${closedDayLabel(currentMonth, day)}</p>
                         <p class="text-xs font-bold text-rose-400 mt-1">今天沒有排班，大家好好休息～</p>
                     </div>`;
                 return;
@@ -1824,7 +2013,7 @@
                     ? shiftData["晚班"].map(person => renderDetailPerson(person, "晚班")).join("")
                     : `<span class="text-gray-400 text-xs font-normal">無班</span>`;
             } else {
-                titleText = `<span class="text-[#1A1D20]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${escapeHtml(currentEmployeeFilter)} 專屬班表</span>`;
+                titleText = `<span class="text-[#2A2522]">${currentMonth}月${day}日</span> <span class="text-amber-600 ml-1 font-black">${escapeHtml(currentEmployeeFilter)} 專屬班表</span>`;
                 const myEarly = shiftData["早班"].find(employee => employee.name === currentEmployeeFilter);
                 const myMid = shiftData["午班"].find(employee => employee.name === currentEmployeeFilter);
                 const myLate = shiftData["晚班"].find(employee => employee.name === currentEmployeeFilter);
@@ -1859,12 +2048,12 @@
                 </div>` : "";
 
             detailContainer.innerHTML = `
-                <div class="calendar-detail-card bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm animate-fade-in">
+                <div class="calendar-detail-card bg-white rounded-2xl border border-[#E8E1DA] p-4 shadow-sm animate-fade-in">
                     <div class="flex justify-between items-center mb-3 gap-2">
-                        <span class="text-base font-black text-[#1A1D20]">${titleText}</span>
+                        <span class="text-base font-black text-[#2A2522]">${titleText}</span>
                         <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded shrink-0">${getWeekdayString(currentMonth, day)}</span>
                     </div>
-                    <hr class="border-[#EDF2F7] mb-3">
+                    <hr class="border-[#F1ECE6] mb-3">
                     <div class="${containerClass}">
                         <div class="flex-1 bg-[#FFFDF5] rounded-xl p-3 border border-amber-100 flex flex-col min-w-0">
                             <div class="flex items-center gap-1.5 mb-2">
@@ -1904,11 +2093,11 @@
                 if(emp.eveningLeaves && emp.eveningLeaves.length > 0) chipsHtml += makeChips("晚班休", emp.eveningLeaves, "bg-blue-50 border-blue-100 text-blue-600");
 
                 container.innerHTML += `
-                    <div class="summary-card reveal-pop bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm">
+                    <div class="summary-card reveal-pop bg-white rounded-2xl border border-[#E8E1DA] p-4 shadow-sm">
                         <div class="flex items-center mb-3">
-                            <span class="text-base font-black text-[#1A1D20]">${emp.name}</span>
+                            <span class="text-base font-black text-[#2A2522]">${emp.name}</span>
                         </div>
-                        <hr class="border-[#EDF2F7] mb-3">
+                        <hr class="border-[#F1ECE6] mb-3">
                         <div class="flex flex-col gap-3">${chipsHtml}</div>
                     </div>
                 `;
@@ -2144,7 +2333,7 @@
                 const animationClass = weatherAnimationClass(code);
                 widget.innerHTML = `
                     <span class="weather-emoji ${animationClass} text-base leading-none">${icon}</span>
-                    <span class="text-sm font-black text-[#1A1D20] whitespace-nowrap">${temp}°C</span>
+                    <span class="text-sm font-black text-[#2A2522] whitespace-nowrap">${temp}°C</span>
                     <span class="flex items-center gap-1 text-[10px] text-gray-500 min-w-0">
                         <i class="fa-solid fa-location-dot text-rose-400 shrink-0"></i>
                         <span class="truncate">${escapeHtml(label)}</span>
@@ -2213,6 +2402,7 @@
 
             currentEmployeeFilter = defaultEmployeeFilter();
             initEmployeeFilter();
+            renderUpdateBanner();
             renderMyShiftCard();
             renderDailyPage(currentSelectedDay);
 
