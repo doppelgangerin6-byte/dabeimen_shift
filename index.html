@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-11-23-v18.12">
+    <meta name="application-version" content="2026-11-23-v18.13">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -864,6 +864,15 @@
         #date-slider > div.shadow-md { box-shadow: 0 8px 18px -8px rgba(122, 94, 76, .75) !important; }
         h2 { color: #514943 !important; letter-spacing: .06em; }
         #app-footer { font-family: 'Cinzel', 'Noto Sans TC', serif; letter-spacing: .08em; color: #B4A79C; }
+        /* 頂部改成乾淨實色：拿掉模糊光暈與毛玻璃（避免看起來霧霧的） */
+        .app-shell::before { display: none !important; }
+        #weather-widget::after, #weather-advice::after { display: none !important; }
+        .app-shell > .top-shell {
+            background: #FAF9F6 !important;
+            -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+            border-bottom: 0 !important;
+        }
     </style>
 </head>
 <body class="bg-[#FAF9F6] min-h-screen">
@@ -1030,9 +1039,9 @@
 
     </div>
 
-    <script src="shift-data.js?v=2026-11-23-v18.12"></script>
+    <script src="shift-data.js?v=2026-11-23-v18.13"></script>
     <script>
-        const APP_VERSION = "2026-11-23-v18.12";
+        const APP_VERSION = "2026-11-23-v18.13";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
 
