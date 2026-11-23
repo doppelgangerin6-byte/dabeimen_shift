@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-11-24-v18.16">
+    <meta name="application-version" content="2026-11-24-v18.17">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -914,6 +914,8 @@
             z-index: 9999;
             pointer-events: none;
         }
+        /* iOS 26 會在最上方強制加一層霧面：把標題往下移，避開霧面範圍 */
+        .app-shell > .top-shell { padding-top: calc(42px + var(--safe-top)) !important; }
     </style>
 </head>
 <body class="bg-[#FAF9F6] min-h-screen">
@@ -1081,9 +1083,9 @@
 
     </div>
 
-    <script src="shift-data.js?v=2026-11-24-v18.16"></script>
+    <script src="shift-data.js?v=2026-11-24-v18.17"></script>
     <script>
-        const APP_VERSION = "2026-11-24-v18.16";
+        const APP_VERSION = "2026-11-24-v18.17";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
 
