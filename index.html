@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-11-24-v18.15">
+    <meta name="application-version" content="2026-11-24-v18.16">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -905,19 +905,19 @@
         .my-time b { font-weight: 900; }
         .my-week-note { font-size: 11px; font-weight: 800; color: #B4A79C; padding-left: .2rem; }
 
-        /* iPhone 狀態列那一條：往下捲時內容會被 iOS 做成霧面模糊，用實色條蓋住 */
-        body::before {
-            content: '';
+        /* iPhone 狀態列：iOS 26 看到「固定在頂部、實色背景」的元素，就會把狀態列改成那個實色，不再做霧面模糊 */
+        #status-bar-cover {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: env(safe-area-inset-top, 0px);
-            background: #FAF9F6;
+            height: max(env(safe-area-inset-top, 0px), 2px);
+            background: #F9F8F5;
             z-index: 9999;
             pointer-events: none;
         }
     </style>
 </head>
 <body class="bg-[#FAF9F6] min-h-screen">
+    <div id="status-bar-cover" aria-hidden="true"></div>
 
     <div class="app-shell w-full max-w-md bg-[#FAF9F6] shadow-xl flex flex-col relative pb-28 min-h-screen">
         
@@ -1081,9 +1081,9 @@
 
     </div>
 
-    <script src="shift-data.js?v=2026-11-24-v18.15"></script>
+    <script src="shift-data.js?v=2026-11-24-v18.16"></script>
     <script>
-        const APP_VERSION = "2026-11-24-v18.15";
+        const APP_VERSION = "2026-11-24-v18.16";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
 
