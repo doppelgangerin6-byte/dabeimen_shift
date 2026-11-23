@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="application-version" content="2026-11-23-v18.13">
+    <meta name="application-version" content="2026-11-23-v18.14">
     <meta name="application-name" content="大北門讚 SmartShift">
     <meta name="apple-mobile-web-app-title" content="大北門讚 SmartShift">
     
@@ -873,6 +873,37 @@
             backdrop-filter: none !important;
             border-bottom: 0 !important;
         }
+
+        /* 本週班表（一天一列，上午／下午兩欄對齊） */
+        .my-eyebrow { font-size: .95rem !important; letter-spacing: .04em !important; color: #2A2522 !important; }
+        .my-range { margin-top: 2px; font-size: 11px; font-weight: 700; color: #A48347; }
+        .my-week-head, .my-week-row {
+            display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); align-items: center; column-gap: .5rem;
+        }
+        .my-week-head { margin-top: .8rem; padding: 0 .55rem .3rem; font-size: 10px; font-weight: 900; color: #A79C93; }
+        .my-week-head { border: 1.5px solid transparent; padding-top: 0; padding-bottom: .25rem; }
+        .my-week-head .my-week-times span { text-align: center; }
+        .my-week-list { display: flex; flex-direction: column; gap: .3rem; }
+        .my-week-row {
+            width: 100%; text-align: left; padding: .45rem .55rem; border-radius: .85rem;
+            background: rgba(255,255,255,.75); border: 1.5px solid #F1ECE6;
+        }
+        .my-week-row:active { transform: scale(.985); }
+        .my-week-row.is-today { border-color: #C1A67D; background: #FBF5EA; box-shadow: 0 6px 14px -10px rgba(164,131,71,.9); }
+        .my-week-row.is-past { opacity: .5; }
+        .my-week-date { display: flex; flex-direction: column; line-height: 1.15; }
+        .my-week-date b { font-size: .9rem; font-weight: 900; color: #2A2522; }
+        .my-week-date small { font-size: 10px; font-weight: 800; color: #A79C93; }
+        .my-week-row.is-today .my-week-date small { color: #A48347; }
+        .my-week-times { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .35rem; }
+        .my-week-times .my-week-note { grid-column: 1 / -1; }
+        .my-time {
+            display: flex; align-items: center; justify-content: center; gap: .3rem;
+            font-size: 11px; font-weight: 800; border: 1px solid transparent; border-radius: .6rem;
+            padding: 4px 0; white-space: nowrap; font-variant-numeric: tabular-nums;
+        }
+        .my-time b { font-weight: 900; }
+        .my-week-note { font-size: 11px; font-weight: 800; color: #B4A79C; padding-left: .2rem; }
     </style>
 </head>
 <body class="bg-[#FAF9F6] min-h-screen">
@@ -1039,9 +1070,9 @@
 
     </div>
 
-    <script src="shift-data.js?v=2026-11-23-v18.13"></script>
+    <script src="shift-data.js?v=2026-11-23-v18.14"></script>
     <script>
-        const APP_VERSION = "2026-11-23-v18.13";
+        const APP_VERSION = "2026-11-23-v18.14";
         window.__DABEIMEN_SHIFT_VERSION__ = APP_VERSION;
 
 
@@ -1624,74 +1655,42 @@
 
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const nowMinutes = now.getHours() * 60 + now.getMinutes();
-            const todayShifts = getMyShiftsOn(today);
-
-            // 今天狀態
-            let statusHtml;
-            let todayHtml;
-            if (todayShifts === null) {
-                statusHtml = `<p class="my-status">📭 今天的班表還沒上傳</p>`;
-                todayHtml = "";
-            } else if (todayShifts.length === 0) {
-                statusHtml = `<p class="my-status">${isClosedDay(today.getMonth() + 1, today.getDate()) ? "🌼 今天公休，好好休息" : "🌴 今天休假，好好休息"}</p>`;
-                todayHtml = "";
-            } else {
-                const current = todayShifts.find(s => nowMinutes >= s.start && nowMinutes < s.end);
-                const upcoming = todayShifts.find(s => nowMinutes < s.start);
-                if (current) {
-                    statusHtml = `<p class="my-status"><span class="my-live-dot"></span>${current.type}上班中・${escapeHtml(current.hours.split("-")[1].trim())} 下班<span class="my-sub">（還有 ${formatDuration(current.end - nowMinutes)}）</span></p>`;
-                } else if (upcoming) {
-                    statusHtml = `<p class="my-status">⏰ ${formatDuration(upcoming.start - nowMinutes)}後上${upcoming.type}<span class="my-sub">（${escapeHtml(upcoming.hours.split("-")[0].trim())}）</span></p>`;
-                } else {
-                    statusHtml = `<p class="my-status">✅ 今天辛苦了，已經下班</p>`;
-                }
-                todayHtml = `<div class="my-row"><span class="my-row-label">今天</span><div class="flex flex-wrap gap-1.5">${shiftPillsHtml(todayShifts)}</div></div>`;
-            }
-
-            // 下次上班（明天以後第一個有班的日子）
-            let nextHtml = `<div class="my-row"><span class="my-row-label">下次</span><span class="text-xs font-bold text-slate-400">還沒排到，等下個月班表</span></div>`;
-            for (let i = 1; i <= 62; i++) {
-                const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
-                const shifts = getMyShiftsOn(date);
-                if (shifts === null) break;
-                if (shifts.length) {
-                    const m = date.getMonth() + 1;
-                    const d = date.getDate();
-                    const when = i === 1 ? "明天" : (i === 2 ? "後天" : `${m}/${d}`);
-                    nextHtml = `<button type="button" onclick="jumpToDate(${m}, ${d})" class="my-row my-row-button">
-                        <span class="my-row-label">下次</span>
-                        <div class="flex flex-wrap items-center gap-1.5"><span class="text-xs font-black text-[#2A2522]">${when}（${WEEKDAY_CHARS[date.getDay()]}）</span>${shiftPillsHtml(shifts)}</div>
-                    </button>`;
-                    break;
-                }
-            }
-
-            // 本週（一 ~ 日）
             const monday = new Date(today);
             monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-            let weekHtml = "";
+            const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+            const md = d => `${d.getMonth() + 1}/${d.getDate()}`;
+
+            const timeCell = shift => shift
+                ? `<span class="my-time my-pill-${shift.short}"><b>${shift.short}</b>${escapeHtml(shift.hours.replace(/\s*-\s*/, "–"))}</span>`
+                : `<span class="my-time-empty"></span>`;
+
+            let rows = "";
             for (let i = 0; i < 7; i++) {
                 const date = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+                const m = date.getMonth() + 1;
+                const d = date.getDate();
                 const shifts = getMyShiftsOn(date);
                 const isToday = date.getTime() === today.getTime();
                 const isPast = date < today;
-                const m = date.getMonth() + 1;
-                const d = date.getDate();
+
                 let body;
-                if (shifts === null) body = `<span class="my-week-off">—</span>`;
-                else if (!shifts.length) body = `<span class="my-week-off">休</span>`;
-                else body = shifts.map(s => `<span class="my-week-tag my-pill-${s.short}">${s.short}</span>`).join("");
+                if (shifts === null) {
+                    body = `<span class="my-week-note">班表尚未上傳</span>`;
+                } else if (!shifts.length) {
+                    body = `<span class="my-week-note">${isClosedDay(m, d) ? "公休" : "休假"}</span>`;
+                } else {
+                    const am = shifts.find(s => s.short === "早");
+                    const pm = shifts.find(s => s.short === "午") || shifts.find(s => s.short === "晚");
+                    body = timeCell(am) + timeCell(pm);
+                }
                 const click = shifts === null ? "" : `onclick="jumpToDate(${m}, ${d})"`;
-                weekHtml += `
-                    <button type="button" ${click} class="my-week-day${isToday ? " is-today" : ""}${isPast ? " is-past" : ""}">
-                        <span class="my-week-wd">${WEEKDAY_CHARS[date.getDay()]}</span>
-                        <span class="my-week-date">${d}</span>
-                        <span class="my-week-tags">${body}</span>
+                rows += `
+                    <button type="button" ${click} class="my-week-row${isToday ? " is-today" : ""}${isPast ? " is-past" : ""}">
+                        <span class="my-week-date"><b>${m}/${d}</b><small>${isToday ? "今天" : "週" + WEEKDAY_CHARS[date.getDay()]}</small></span>
+                        <span class="my-week-times">${body}</span>
                     </button>`;
             }
 
-            // 本月統計
             const statMonth = (appData[today.getMonth() + 1] && yearOfMonth(today.getMonth() + 1) === today.getFullYear())
                 ? today.getMonth() + 1 : latestMonth;
             const stat = appData[statMonth]?.stats?.find(emp => emp.name === myName);
@@ -1705,17 +1704,15 @@
             container.innerHTML = `
                 <div class="my-card">
                     <div class="flex items-center justify-between gap-3">
-                        <p class="my-eyebrow">🙋 ${escapeHtml(myName)} 的班表</p>
-                        <button type="button" onclick="openMyPicker(true)" class="my-link">換人</button>
+                        <div class="min-w-0">
+                            <p class="my-eyebrow">${escapeHtml(myName)} 的本週班表</p>
+                            <p class="my-range">${md(monday)}（一）– ${md(sunday)}（日）</p>
+                        </div>
+                        <button type="button" onclick="openMyPicker(true)" class="my-link shrink-0">換人</button>
                     </div>
-                    ${statusHtml}
-                    <div class="flex flex-col gap-2 mt-3">
-                        ${todayHtml}
-                        ${nextHtml}
-                    </div>
-                    <div class="my-week">${weekHtml}</div>
+                    <div class="my-week-head"><span></span><span class="my-week-times"><span>上午</span><span>下午</span></span></div>
+                    <div class="my-week-list">${rows}</div>
                     ${statHtml}
-                    ${myCalendarUrl() ? `<a href="${myCalendarUrl()}" class="my-cal-btn"><i class="fa-regular fa-calendar-plus"></i>加到 iPhone 行事曆（自動同步）</a>` : ""}
                 </div>`;
         }
 
